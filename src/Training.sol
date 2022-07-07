@@ -13,22 +13,13 @@ struct Config {
 
 struct Session {
 	uint256 end;
-	uint8 duration;
+	uint8 time;
 }
 
 contract Training is Randomness {
-	/*
-  Config[] config = [
-    Config(86400, [[30, 20], [40, 30], [20, 50], [10, 80]]),
-    Config(259200, [[30, 45], [40, 75], [20, 130], [10, 220]]),
-    Config(604800,  [[30, 65], [40, 115], [20, 210], [10, 360]])
-  ];
-  */
-
 	Characters public characters;
 	mapping(uint256 => Session) public sessions;
 	MintableERC20 public powder;
-	Config[] public configs;
 
 	Probability[][] public probabilities;
 	uint32[] public durations;
@@ -68,16 +59,13 @@ contract Training is Randomness {
 		}
 	}
 
-	function train(uint256 id, uint8 duration) public {
-		Config storage config = configs[duration];
-		require(config.duration > 0, 'WRONG_DURATION');
+	function train(uint256 id, uint8 time) public {
+		uint256 duration = durations[time];
+		require(duration > 0, 'WRONG_DURATION');
 		require(sessions[id].end == 0, 'ALREADY_TRAINING');
 		require(characters.ownerOf(id) == msg.sender, 'NOT_AUTHORIZED');
 
-		sessions[id] = Session({
-			end: block.timestamp + config.duration,
-			duration: duration
-		});
+		sessions[id] = Session({end: block.timestamp + duration, time: time});
 	}
 
 	function endTrain(uint256 id) public {
@@ -87,7 +75,6 @@ contract Training is Randomness {
 
 		training.end = 0;
 
-		Config storage config = configs[training.duration];
-		powder.mint(msg.sender, getRandomUint(config.probabilities));
+		powder.mint(msg.sender, getRandomUint(probabilities[training.time]));
 	}
 }
