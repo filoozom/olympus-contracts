@@ -26,23 +26,38 @@ contract Training is Randomness {
   */
 
 	Characters public characters;
-	Config[] public configs;
 	mapping(uint256 => Session) public sessions;
 	MintableERC20 public powder;
+	Config[] public configs;
 
-	constructor(Characters _characters, Config[] memory _configs) {
+	Probability[][] public probabilities;
+	uint32[] public durations;
+
+	constructor(
+		Characters _characters,
+		uint32[] memory _durations,
+		Probability[][] memory _probabilities
+	) {
 		characters = _characters;
+		durations = _durations;
 
-		/*
-		uint256 length = _configs.length;
-		for (uint256 i = 0; i < length; ) {
-			configs.push(_configs[i]);
+		uint256 iLength = _probabilities.length;
+		for (uint256 i = 0; i < iLength; ) {
+			uint256 jLength = _probabilities[i].length;
+			Probability[] storage probability = probabilities.push();
+
+			for (uint256 j = 0; j < jLength; ) {
+				probability.push(_probabilities[i][j]);
+
+				unchecked {
+					++j;
+				}
+			}
 
 			unchecked {
 				++i;
 			}
 		}
-    */
 	}
 
 	function train(uint256 id, uint8 duration) public {
