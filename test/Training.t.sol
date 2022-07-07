@@ -4,8 +4,8 @@ import 'forge-std/Test.sol';
 
 // Custom
 import {Characters} from 'src/Characters.sol';
-import {Training, Config} from 'src/Training.sol';
-import {Probability} from 'src/lib/Randomness.sol';
+import {Training} from 'src/Training.sol';
+import {Probabilities} from 'src/lib/Randomness.sol';
 
 contract TrainingTest is Test {
 	Characters characters;
@@ -27,9 +27,9 @@ contract TrainingTest is Test {
 	function getProbabilities()
 		public
 		pure
-		returns (Probability[][] memory probabilities)
+		returns (Probabilities[] memory probabilities)
 	{
-		probabilities = new Probability[][](3);
+		probabilities = new Probabilities[](3);
 		probabilities[0] = getOneDayProbabilities();
 		probabilities[1] = getThreeDaysProbabilities();
 		probabilities[2] = getSevenDaysProbabilities();
@@ -38,36 +38,62 @@ contract TrainingTest is Test {
 	function getOneDayProbabilities()
 		public
 		pure
-		returns (Probability[] memory probabilities)
+		returns (Probabilities memory probabilities)
 	{
-		probabilities = new Probability[](4);
-		probabilities[0] = Probability(30, 20);
-		probabilities[1] = Probability(40, 30);
-		probabilities[2] = Probability(20, 50);
-		probabilities[3] = Probability(10, 80);
+		uint16[] memory results = new uint16[](4);
+		results[0] = 80;
+		results[1] = 50;
+		results[2] = 20;
+		results[3] = 30;
+
+		probabilities = Probabilities({
+			sum: 100,
+			shares: getShares(),
+			results: results
+		});
 	}
 
 	function getThreeDaysProbabilities()
 		public
 		pure
-		returns (Probability[] memory probabilities)
+		returns (Probabilities memory probabilities)
 	{
-		probabilities = new Probability[](4);
-		probabilities[0] = Probability(30, 45);
-		probabilities[1] = Probability(40, 75);
-		probabilities[2] = Probability(20, 130);
-		probabilities[3] = Probability(10, 220);
+		uint16[] memory results = new uint16[](4);
+		results[0] = 220;
+		results[1] = 130;
+		results[2] = 75;
+		results[3] = 45;
+
+		probabilities = Probabilities({
+			sum: 100,
+			shares: getShares(),
+			results: results
+		});
 	}
 
 	function getSevenDaysProbabilities()
 		public
 		pure
-		returns (Probability[] memory probabilities)
+		returns (Probabilities memory probabilities)
 	{
-		probabilities = new Probability[](4);
-		probabilities[0] = Probability(30, 65);
-		probabilities[1] = Probability(40, 115);
-		probabilities[2] = Probability(20, 210);
-		probabilities[3] = Probability(10, 360);
+		uint16[] memory results = new uint16[](4);
+		results[0] = 360;
+		results[1] = 210;
+		results[2] = 115;
+		results[3] = 65;
+
+		probabilities = Probabilities({
+			sum: 100,
+			shares: getShares(),
+			results: results
+		});
+	}
+
+	function getShares() public pure returns (uint8[] memory shares) {
+		shares = new uint8[](4);
+		shares[0] = 10;
+		shares[1] = 20;
+		shares[2] = 30;
+		shares[3] = 40;
 	}
 }

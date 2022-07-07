@@ -1,9 +1,14 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-struct Probability {
-	uint8 probability;
-	uint16 result;
+/// @notice Probability that some result happens based on its shares
+/// @notice The probability of getting results[0] is shares[0] / sum
+/// @dev sum needs to be equal to the sum of shares
+/// @dev the length of the shares and results arrays need to be equal
+struct Probabilities {
+	uint16 sum;
+	uint8[] shares;
+	uint16[] results;
 }
 
 abstract contract Randomness {
@@ -39,22 +44,21 @@ abstract contract Randomness {
 		return seed;
 	}
 
-	function getRandomUint(Probability[] storage probabilities)
+	function getRandomUint(Probabilities storage probabilities)
 		internal
 		returns (uint16 random)
 	{
-		uint256 number = getRandom() % 100;
+		uint256 number = getRandom() % probabilities.sum;
+		uint256 length = probabilities.shares.length;
 		uint8 total = 0;
-		uint256 length = probabilities.length;
 
 		for (uint8 i = 0; i < length; ) {
-			Probability storage probability = probabilities[i];
 			unchecked {
-				total += probability.probability;
+				total += probabilities.shares[i];
 			}
 
 			if (number < total) {
-				return probability.result;
+				return probabilities.results[i];
 			}
 
 			unchecked {

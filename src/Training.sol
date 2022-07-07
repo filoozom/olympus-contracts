@@ -4,12 +4,7 @@ pragma solidity ^0.8.13;
 // Custom
 import {Characters} from './Characters.sol';
 import {MintableERC20} from './lib/MintableERC20.sol';
-import {Randomness, Probability} from './lib/Randomness.sol';
-
-struct Config {
-	uint32 duration;
-	Probability[] probabilities;
-}
+import {Randomness, Probabilities} from './lib/Randomness.sol';
 
 struct Session {
 	uint256 end;
@@ -21,38 +16,23 @@ contract Training is Randomness {
 	mapping(uint256 => Session) public sessions;
 	MintableERC20 public powder;
 
-	Probability[][] public probabilities;
+	Probabilities[] public probabilities;
 	uint32[] public durations;
 
 	constructor(
 		Characters _characters,
 		uint32[] memory _durations,
-		Probability[][] memory _probabilities
+		Probabilities[] memory _probabilities
 	) {
 		characters = _characters;
 		durations = _durations;
-		setAllProbabilities(_probabilities);
+		setProbabilities(_probabilities);
 	}
 
-	function setAllProbabilities(Probability[][] memory _probabilities)
-		private
-	{
+	function setProbabilities(Probabilities[] memory _probabilities) private {
 		uint256 length = _probabilities.length;
 		for (uint256 i = 0; i < length; ) {
-			setProbabilities(probabilities.push(), _probabilities[i]);
-			unchecked {
-				++i;
-			}
-		}
-	}
-
-	function setProbabilities(
-		Probability[] storage probability,
-		Probability[] memory _probabilities
-	) private {
-		uint256 length = _probabilities.length;
-		for (uint256 i = 0; i < length; ) {
-			probability.push(_probabilities[i]);
+			probabilities.push(_probabilities[i]);
 			unchecked {
 				++i;
 			}

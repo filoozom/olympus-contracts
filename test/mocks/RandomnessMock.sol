@@ -2,20 +2,13 @@
 pragma solidity ^0.8.13;
 
 // Custom
-import {Randomness, Probability} from 'src/lib/Randomness.sol';
+import {Randomness, Probabilities} from 'src/lib/Randomness.sol';
 
 contract RandomnessMock is Randomness {
-	Probability[] probabilities;
+	Probabilities probabilities;
 
-	constructor(Probability[] memory _probabilities) {
-		uint256 length = _probabilities.length;
-		for (uint256 i = 0; i < length; ) {
-			probabilities.push(_probabilities[i]);
-
-			unchecked {
-				++i;
-			}
-		}
+	constructor(Probabilities memory _probabilities) {
+		probabilities = _probabilities;
 	}
 
 	function getRandomNumber() public returns (uint16 random) {
