@@ -17,7 +17,7 @@ contract TrainingTest is Test {
 	}
 
 	// Data
-	function getDurations() public view returns (uint32[] memory durations) {
+	function getDurations() public pure returns (uint32[] memory durations) {
 		durations = new uint32[](3);
 		durations[0] = 86400;
 		durations[1] = 259200;
@@ -26,7 +26,7 @@ contract TrainingTest is Test {
 
 	function getProbabilities()
 		public
-		view
+		pure
 		returns (Probability[][] memory probabilities)
 	{
 		probabilities = new Probability[][](3);
@@ -37,7 +37,7 @@ contract TrainingTest is Test {
 
 	function getOneDayProbabilities()
 		public
-		view
+		pure
 		returns (Probability[] memory probabilities)
 	{
 		probabilities = new Probability[](4);
@@ -49,7 +49,7 @@ contract TrainingTest is Test {
 
 	function getThreeDaysProbabilities()
 		public
-		view
+		pure
 		returns (Probability[] memory probabilities)
 	{
 		probabilities = new Probability[](4);
@@ -61,7 +61,7 @@ contract TrainingTest is Test {
 
 	function getSevenDaysProbabilities()
 		public
-		view
+		pure
 		returns (Probability[] memory probabilities)
 	{
 		probabilities = new Probability[](4);

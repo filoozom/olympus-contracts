@@ -40,20 +40,28 @@ contract Training is Randomness {
 	) {
 		characters = _characters;
 		durations = _durations;
+		setAllProbabilities(_probabilities);
+	}
 
-		uint256 iLength = _probabilities.length;
-		for (uint256 i = 0; i < iLength; ) {
-			uint256 jLength = _probabilities[i].length;
-			Probability[] storage probability = probabilities.push();
-
-			for (uint256 j = 0; j < jLength; ) {
-				probability.push(_probabilities[i][j]);
-
-				unchecked {
-					++j;
-				}
+	function setAllProbabilities(Probability[][] memory _probabilities)
+		private
+	{
+		uint256 length = _probabilities.length;
+		for (uint256 i = 0; i < length; ) {
+			setProbabilities(probabilities.push(), _probabilities[i]);
+			unchecked {
+				++i;
 			}
+		}
+	}
 
+	function setProbabilities(
+		Probability[] storage probability,
+		Probability[] memory _probabilities
+	) private {
+		uint256 length = _probabilities.length;
+		for (uint256 i = 0; i < length; ) {
+			probability.push(_probabilities[i]);
 			unchecked {
 				++i;
 			}
