@@ -73,7 +73,11 @@ contract Characters is ERC721 {
 
 	function evolve(uint256 id) public {
 		require(msg.sender == _ownerOf[id], 'NOT_AUTHORIZED');
-		evolvingStones.burnFrom(msg.sender, levelCosts[characters[id].level]);
+		Character storage character = characters[id];
+		require(character.level < getMaxLevel(id), 'ALREADY_MAX_LEVEL');
+
+		evolvingStones.burnFrom(msg.sender, levelCosts[characters[id].level - 1]);
+
 		characters[id].level++;
 		emit Evolve(id, ++characters[id].level);
 	}
@@ -83,5 +87,19 @@ contract Characters is ERC721 {
 		uint256 /*id*/
 	) public view virtual override returns (string memory) {
 		return '';
+	}
+
+	function getMaxLevel(uint256 id) public view returns (uint8) {
+		Character storage character = characters[id];
+
+		if (character.rarity == Rarities.Diamond) {
+			return 6;
+		}
+
+		if (character.rarity == Rarities.Gold) {
+			return 5;
+		}
+
+		return 4;
 	}
 }
