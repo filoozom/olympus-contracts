@@ -2,6 +2,7 @@
 	"name": "@olympusgame/nft-contracts",
 	"version": "0.0.0",
 	"scripts": {
+		"prepare": "husky install",
 		"lint": "prettier -c **.sol",
 		"prettier": "prettier --write **.sol"
 	},
@@ -14,21 +15,7 @@
 		"prettier": "^2.7.1",
 		"prettier-plugin-solidity": "^1.0.0-beta.19"
 	},
-	"husky": {
-		"hooks": {
-			"pre-commit": "lint-staged"
-		}
-	},
 	"lint-staged": {
-		"linters": {
-			"*.{sol}": [
-				"prettier --write",
-				"git add"
-			]
-		},
-		"ignore": [
-			"lib",
-			"out"
-		]
+		"*.sol": "prettier --write"
 	}
 }
