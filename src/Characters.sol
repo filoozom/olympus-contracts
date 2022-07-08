@@ -8,7 +8,7 @@ import {ERC1155} from 'solmate/tokens/ERC1155.sol';
 import {SafeTransferLib} from 'solmate/utils/SafeTransferLib.sol';
 
 // Custom
-import {OpenChests} from './OpenChests.sol';
+import {EvolvingStones} from './EvolvingStones.sol';
 
 contract Characters is ERC721 {
 	event Minted(address indexed owner, uint256 indexed id, Rarities rarity);
@@ -35,11 +35,19 @@ contract Characters is ERC721 {
 		Rarities rarity;
 	}
 
+	EvolvingStones public evolvingStones;
 	Character[] public characters;
+	uint8[] public levelCosts;
 
-	constructor(string memory _name, string memory _symbol)
-		ERC721(_name, _symbol)
-	{}
+	constructor(
+		string memory _name,
+		string memory _symbol,
+		EvolvingStones _evolvingStones,
+		uint8[] memory _levelCosts
+	) ERC721(_name, _symbol) {
+		evolvingStones = _evolvingStones;
+		levelCosts = _levelCosts;
+	}
 
 	function mint(
 		address to,
@@ -65,6 +73,7 @@ contract Characters is ERC721 {
 
 	// Authorized
 	function evolve(uint256 id) external {
+		evolvingStones.burnFrom(msg.sender, levelCosts[characters[id].level]);
 		emit Evolve(id, ++characters[id].level);
 	}
 
