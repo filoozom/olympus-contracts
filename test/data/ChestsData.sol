@@ -3,13 +3,21 @@ pragma solidity ^0.8.13;
 
 // Custom
 import { Probabilities } from 'src/lib/Randomness.sol';
-import { Settings, ChestConfigs, Settings } from 'src/Chests.sol';
+import { Settings, ChestConfigs, Settings, Chests } from 'src/Chests.sol';
 
 // Lib
 import { ToDynamicLib } from '../lib/ToDynamicLib.sol';
 import { ProbabilitiesLib } from '../lib/ProbabilitiesLib.sol';
 
 library ChestsData {
+	function getChests() public pure returns (Chest[] memory chests) {
+		chests = new Chest[](4);
+		chests[0] = Chest(0, 1000, 40e18);
+		chests[1] = Chest(0, 500, 80e18);
+		chests[2] = Chest(0, 250, 160e18);
+		chests[3] = Chest(0, 140, 300e18);
+	}
+
 	function getConfigs() public pure returns (ChestConfigs[] memory configs) {
 		uint256 i = 0;
 		configs = new ChestConfigs[](20);

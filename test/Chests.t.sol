@@ -61,7 +61,7 @@ contract ChestsTest is Test {
 			MintableERC20(olymp),
 			MintableERC20(powder),
 			MintableERC20(evolvingStones),
-			new Chest[](0),
+			ChestsData.getChests(),
 			ChestsData.getConfigs()
 		);
 	}
