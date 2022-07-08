@@ -8,7 +8,7 @@ import { ERC1155 } from 'solmate/tokens/ERC1155.sol';
 import { SafeTransferLib } from 'solmate/utils/SafeTransferLib.sol';
 
 // Custom
-import { EvolvingStones } from './EvolvingStones.sol';
+import { BurnableERC20 } from './lib/BurnableERC20.sol';
 
 enum Rarities {
 	Normal,
@@ -35,14 +35,14 @@ contract Characters is ERC721 {
 	event SetName(uint256 indexed id, string name);
 	event Evolve(uint256 indexed id, uint256 newLevel);
 
-	EvolvingStones public evolvingStones;
+	BurnableERC20 public evolvingStones;
 	Character[] public characters;
 	uint8[] public levelCosts;
 
 	constructor(
 		string memory _name,
 		string memory _symbol,
-		EvolvingStones _evolvingStones,
+		BurnableERC20 _evolvingStones,
 		uint8[] memory _levelCosts
 	) ERC721(_name, _symbol) {
 		evolvingStones = _evolvingStones;
