@@ -91,13 +91,12 @@ library ChestsData {
 		pure
 		returns (ChestConfigs memory)
 	{
-		// TODO: Should only get a character with 40% chance
 		return
 			ProbabilitiesLib.createConfig(
 				0,
 				ProbabilityNames.CharacterRarity,
-				ToDynamicLib.toDynamic([1]),
-				ToDynamicLib.toDynamic([uint16(0)])
+				ToDynamicLib.toDynamic([6, 4]),
+				ToDynamicLib.toDynamic([type(uint16).max, 0])
 			);
 	}
 
