@@ -46,9 +46,17 @@ abstract contract Randomness {
 
 	function getRandomUint(Probabilities storage probabilities)
 		internal
-		returns (uint16 random)
+		returns (uint16)
 	{
-		uint256 number = getRandom() % probabilities.sum;
+		return getRandomUint(probabilities, getRandom());
+	}
+
+	function getRandomUint(Probabilities storage probabilities, uint256 random)
+		internal
+		view
+		returns (uint16)
+	{
+		uint256 number = random % probabilities.sum;
 		uint256 length = probabilities.shares.length;
 		uint8 total = 0;
 
@@ -65,5 +73,7 @@ abstract contract Randomness {
 				i++;
 			}
 		}
+
+		revert('SHOULD_NOT_HAPPEN');
 	}
 }

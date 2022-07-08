@@ -9,11 +9,12 @@ import { SafeTransferLib } from 'solmate/utils/SafeTransferLib.sol';
 
 // Custom
 import { Randomness, Probabilities } from './lib/Randomness.sol';
-import { Characters } from './Characters.sol';
+import { MintableERC20 } from './lib/MintableERC20.sol';
+import { Characters, Rarities } from './Characters.sol';
 
-enum ProbabilityNames {
+enum Settings {
 	EvolvingStone,
-	EvolvingPowder,
+	Powder,
 	Olymp,
 	CharacterRarity,
 	Character
@@ -27,7 +28,7 @@ struct Chest {
 
 struct ChestConfigs {
 	uint8 chest;
-	ProbabilityNames name;
+	Settings name;
 	Probabilities probabilities;
 }
 
@@ -39,18 +40,30 @@ contract Chests is ERC1155, Randomness {
 	Chest[] chests;
 	Characters characters;
 
-	mapping(uint256 => mapping(ProbabilityNames => Probabilities)) probabilities;
+	MintableERC20 olymp;
+	MintableERC20 powder;
+	MintableERC20 evolvingStones;
+
+	mapping(uint256 => mapping(Settings => Probabilities)) probabilities;
 
 	constructor(
 		ERC20 _currency,
 		address _beneficiary,
 		Characters _characters,
+		MintableERC20 _olymp,
+		MintableERC20 _powder,
+		MintableERC20 _evolvingStones,
 		Chest[] memory _chests,
 		ChestConfigs[] memory _configs
 	) {
 		currency = _currency;
 		beneficiary = _beneficiary;
 		characters = _characters;
+
+		olymp = _olymp;
+		powder = _powder;
+		evolvingStones = _evolvingStones;
+
 		setChests(_chests);
 		setConfigs(_configs);
 	}
@@ -96,6 +109,53 @@ contract Chests is ERC1155, Randomness {
 	}
 
 	function open(uint256 id, uint32 amount) public {
+		// Burn the chest
 		_burn(msg.sender, id, amount);
+
+		// Get large random number
+		uint16 result;
+		uint256 random = getRandom();
+
+		// Get evolving stones to mint
+		(result, random) = getProbability(id, Settings.EvolvingStone, random);
+		if (result > 0) {
+			evolvingStones.mint(msg.sender, result);
+		}
+
+		// Get powder to mint
+		(result, random) = getProbability(id, Settings.Powder, random);
+		if (result > 0) {
+			powder.mint(msg.sender, result);
+		}
+
+		// Get OLYMP to mint
+		(result, random) = getProbability(id, Settings.Olymp, random);
+		if (result > 0) {
+			olymp.mint(msg.sender, result);
+		}
+
+		// Get rarity of the character to mint
+		(result, random) = getProbability(id, Settings.CharacterRarity, random);
+
+		// If the rarity is invalid, it means no character should be minted
+		if (result > uint16(type(Rarities).max)) {
+			return;
+		}
+
+		// Keep rarity to set on the character
+		Rarities rarity = Rarities(result);
+
+		// Mint character
+		(result, random) = getProbability(id, Settings.Character, random);
+		characters.mint(msg.sender, result, rarity);
+	}
+
+	function getProbability(
+		uint256 id,
+		Settings name,
+		uint256 random
+	) internal view returns (uint16, uint256) {
+		Probabilities storage prob = probabilities[id][name];
+		return (getRandomUint(prob, random), random / prob.sum);
 	}
 }

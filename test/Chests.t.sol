@@ -8,7 +8,7 @@ import { ERC1155 } from 'solmate/tokens/ERC1155.sol';
 
 // Custom
 import { Chests, Chest } from 'src/Chests.sol';
-import { Characters } from 'src/Characters.sol';
+import { Characters, Rarities } from 'src/Characters.sol';
 import { EvolvingStones } from 'src/EvolvingStones.sol';
 
 // Mocks

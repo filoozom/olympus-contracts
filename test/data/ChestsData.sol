@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 // Custom
 import { Probabilities } from 'src/lib/Randomness.sol';
-import { ProbabilityNames, ChestConfigs, ProbabilityNames } from 'src/Chests.sol';
+import { Settings, ChestConfigs, Settings } from 'src/Chests.sol';
 
 // Lib
 import { ToDynamicLib } from '../lib/ToDynamicLib.sol';
@@ -16,28 +16,28 @@ library ChestsData {
 
 		// Common chest
 		configs[i++] = getCommonChestEvolvingStoneConfig();
-		configs[i++] = getCommonChestEvolvingPowderConfig();
+		configs[i++] = getCommonChestPowderConfig();
 		configs[i++] = getCommonChestOlympConfig();
 		configs[i++] = getCommonChestCharacterRarityConfig();
 		configs[i++] = getCommonChestCharacterConfig();
 
 		// Uncommon chest
 		configs[i++] = getUncommonChestEvolvingStoneConfig();
-		configs[i++] = getUncommonChestEvolvingPowderConfig();
+		configs[i++] = getUncommonChestPowderConfig();
 		configs[i++] = getUncommonChestOlympConfig();
 		configs[i++] = getUncommonChestCharacterRarityConfig();
 		configs[i++] = getUncommonChestCharacterConfig();
 
 		// Rare chest
 		configs[i++] = getRareChestEvolvingStoneConfig();
-		configs[i++] = getRareChestEvolvingPowderConfig();
+		configs[i++] = getRareChestPowderConfig();
 		configs[i++] = getRareChestOlympConfig();
 		configs[i++] = getRareChestCharacterRarityConfig();
 		configs[i++] = getRareChestCharacterConfig();
 
 		// Legendary chest
 		configs[i++] = getLegendaryChestEvolvingStoneConfig();
-		configs[i++] = getLegendaryChestEvolvingPowderConfig();
+		configs[i++] = getLegendaryChestPowderConfig();
 		configs[i++] = getLegendaryChestOlympConfig();
 		configs[i++] = getLegendaryChestCharacterRarityConfig();
 		configs[i++] = getLegendaryChestCharacterConfig();
@@ -52,13 +52,13 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.EvolvingStone,
+				Settings.EvolvingStone,
 				ToDynamicLib.toDynamic([9, 1]),
 				ToDynamicLib.toDynamic([uint16(0), 1])
 			);
 	}
 
-	function getCommonChestEvolvingPowderConfig()
+	function getCommonChestPowderConfig()
 		public
 		pure
 		returns (ChestConfigs memory)
@@ -66,7 +66,7 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.EvolvingPowder,
+				Settings.Powder,
 				ToDynamicLib.toDynamic([5, 4, 1]),
 				ToDynamicLib.toDynamic([uint16(10), 20, 50])
 			);
@@ -80,7 +80,7 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.Olymp,
+				Settings.Olymp,
 				ToDynamicLib.toDynamic([70, 15, 12, 3]),
 				ToDynamicLib.toDynamic([uint16(0), 200, 400, 800])
 			);
@@ -94,7 +94,7 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.CharacterRarity,
+				Settings.CharacterRarity,
 				ToDynamicLib.toDynamic([6, 4]),
 				ToDynamicLib.toDynamic([type(uint16).max, 0])
 			);
@@ -108,7 +108,7 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.Character,
+				Settings.Character,
 				ToDynamicLib.toDynamic([5, 3, 2]),
 				ToDynamicLib.toDynamic([uint16(0), 1, 2])
 			);
@@ -123,13 +123,13 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.EvolvingStone,
+				Settings.EvolvingStone,
 				ToDynamicLib.toDynamic([85, 15]),
 				ToDynamicLib.toDynamic([uint16(0), 1])
 			);
 	}
 
-	function getUncommonChestEvolvingPowderConfig()
+	function getUncommonChestPowderConfig()
 		public
 		pure
 		returns (ChestConfigs memory)
@@ -137,7 +137,7 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.EvolvingPowder,
+				Settings.Powder,
 				ToDynamicLib.toDynamic([5, 4, 1]),
 				ToDynamicLib.toDynamic([uint16(20), 40, 100])
 			);
@@ -151,7 +151,7 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.Olymp,
+				Settings.Olymp,
 				ToDynamicLib.toDynamic([60, 20, 16, 4]),
 				ToDynamicLib.toDynamic([uint16(0), 400, 800, 1600])
 			);
@@ -165,7 +165,7 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.CharacterRarity,
+				Settings.CharacterRarity,
 				ToDynamicLib.toDynamic([8, 2]),
 				ToDynamicLib.toDynamic([uint16(0), 1])
 			);
@@ -179,7 +179,7 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.Character,
+				Settings.Character,
 				ToDynamicLib.toDynamic([35, 30, 25, 10]),
 				ToDynamicLib.toDynamic([uint16(0), 1, 2, 3])
 			);
@@ -194,13 +194,13 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.EvolvingStone,
+				Settings.EvolvingStone,
 				ToDynamicLib.toDynamic([4, 1]),
 				ToDynamicLib.toDynamic([uint16(0), 1])
 			);
 	}
 
-	function getRareChestEvolvingPowderConfig()
+	function getRareChestPowderConfig()
 		public
 		pure
 		returns (ChestConfigs memory)
@@ -208,7 +208,7 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.EvolvingPowder,
+				Settings.Powder,
 				ToDynamicLib.toDynamic([5, 4, 1]),
 				ToDynamicLib.toDynamic([uint16(40), 80, 200])
 			);
@@ -218,7 +218,7 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.Olymp,
+				Settings.Olymp,
 				ToDynamicLib.toDynamic([50, 25, 20, 5]),
 				ToDynamicLib.toDynamic([uint16(0), 800, 1600, 3200])
 			);
@@ -232,7 +232,7 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.CharacterRarity,
+				Settings.CharacterRarity,
 				ToDynamicLib.toDynamic([1, 1]),
 				ToDynamicLib.toDynamic([uint16(0), 1])
 			);
@@ -246,7 +246,7 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.Character,
+				Settings.Character,
 				ToDynamicLib.toDynamic([35, 30, 25, 10]),
 				ToDynamicLib.toDynamic([uint16(1), 2, 3, 4])
 			);
@@ -261,13 +261,13 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.EvolvingStone,
+				Settings.EvolvingStone,
 				ToDynamicLib.toDynamic([3, 1]),
 				ToDynamicLib.toDynamic([uint16(0), 1])
 			);
 	}
 
-	function getLegendaryChestEvolvingPowderConfig()
+	function getLegendaryChestPowderConfig()
 		public
 		pure
 		returns (ChestConfigs memory)
@@ -275,7 +275,7 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.EvolvingPowder,
+				Settings.Powder,
 				ToDynamicLib.toDynamic([5, 4, 1]),
 				ToDynamicLib.toDynamic([uint16(160), 80, 400])
 			);
@@ -289,7 +289,7 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.Olymp,
+				Settings.Olymp,
 				ToDynamicLib.toDynamic([40, 30, 24, 6]),
 				ToDynamicLib.toDynamic([uint16(0), 1600, 3200, 6400])
 			);
@@ -303,7 +303,7 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.CharacterRarity,
+				Settings.CharacterRarity,
 				ToDynamicLib.toDynamic([3, 1, 1]),
 				ToDynamicLib.toDynamic([uint16(1), 0, 2])
 			);
@@ -317,7 +317,7 @@ library ChestsData {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
-				ProbabilityNames.Character,
+				Settings.Character,
 				ToDynamicLib.toDynamic([35, 30, 25, 10]),
 				ToDynamicLib.toDynamic([uint16(2), 3, 4, 5])
 			);

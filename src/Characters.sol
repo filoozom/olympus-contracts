@@ -10,30 +10,30 @@ import { SafeTransferLib } from 'solmate/utils/SafeTransferLib.sol';
 // Custom
 import { EvolvingStones } from './EvolvingStones.sol';
 
+enum Rarities {
+	Normal,
+	Gold,
+	Diamond
+}
+
+// IDS:
+// 0: Medusa
+// 1: Apollo
+// 2: Achilles
+// 3: Titan
+// 4: Chimera
+// 5: Zeus
+struct Character {
+	uint256 id;
+	string nickname;
+	uint8 level;
+	Rarities rarity;
+}
+
 contract Characters is ERC721 {
 	event Minted(address indexed owner, uint256 indexed id, Rarities rarity);
 	event SetName(uint256 indexed id, string name);
 	event Evolve(uint256 indexed id, uint256 newLevel);
-
-	enum Rarities {
-		Normal,
-		Gold,
-		Diamond
-	}
-
-	// IDS:
-	// 0: Medusa
-	// 1: Apollo
-	// 2: Achilles
-	// 3: Titan
-	// 4: Chimera
-	// 5: Zeus
-	struct Character {
-		uint256 id;
-		string nickname;
-		uint8 level;
-		Rarities rarity;
-	}
 
 	EvolvingStones public evolvingStones;
 	Character[] public characters;
