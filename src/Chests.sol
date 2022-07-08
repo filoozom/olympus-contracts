@@ -35,16 +35,19 @@ struct ChestConfigs {
 contract Chests is ERC1155, Randomness {
 	event ChestOpened(address indexed owner, uint256 indexed id);
 
+	// Chest config
+	Chest[] chests;
+	mapping(uint256 => mapping(Settings => Probabilities)) probabilities;
+
+	// Minting configuration
 	ERC20 currency;
 	address beneficiary;
-	Chest[] chests;
-	Characters characters;
 
+	// Resources to mint on chest opening
+	Characters characters;
 	MintableERC20 olymp;
 	MintableERC20 powder;
 	MintableERC20 evolvingStones;
-
-	mapping(uint256 => mapping(Settings => Probabilities)) probabilities;
 
 	constructor(
 		ERC20 _currency,
@@ -56,14 +59,17 @@ contract Chests is ERC1155, Randomness {
 		Chest[] memory _chests,
 		ChestConfigs[] memory _configs
 	) {
+		// Minting configuration
 		currency = _currency;
 		beneficiary = _beneficiary;
-		characters = _characters;
 
+		// Resources to mint on chest opening
+		characters = _characters;
 		olymp = _olymp;
 		powder = _powder;
 		evolvingStones = _evolvingStones;
 
+		// Chest config
 		setChests(_chests);
 		setConfigs(_configs);
 	}
