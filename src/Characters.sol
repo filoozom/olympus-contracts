@@ -71,9 +71,10 @@ contract Characters is ERC721 {
 		emit SetName(id, nickname);
 	}
 
-	// Authorized
-	function evolve(uint256 id) external {
+	function evolve(uint256 id) public {
+		require(msg.sender == _ownerOf[id], 'NOT_AUTHORIZED');
 		evolvingStones.burnFrom(msg.sender, levelCosts[characters[id].level]);
+		characters[id].level++;
 		emit Evolve(id, ++characters[id].level);
 	}
 
