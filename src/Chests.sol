@@ -8,7 +8,7 @@ import {ERC1155} from 'solmate/tokens/ERC1155.sol';
 import {SafeTransferLib} from 'solmate/utils/SafeTransferLib.sol';
 
 // Custom
-import {OpenChests} from './OpenChests.sol';
+import {Randomness, Probabilities} from './lib/Randomness.sol';
 
 enum Characters {
 	Medusa,
@@ -19,7 +19,7 @@ enum Characters {
 	Zeus
 }
 
-contract Chests is ERC1155 {
+contract Chests is ERC1155, Randomness {
 	struct Chest {
 		uint256 minted;
 		uint256 max;
@@ -32,7 +32,6 @@ contract Chests is ERC1155 {
 	address beneficiary;
 	Chest[] chests;
 	ERC1155 characters;
-	OpenChests openChests;
 
 	constructor(
 		ERC20 _currency,
@@ -69,17 +68,11 @@ contract Chests is ERC1155 {
 			price = chest.price * amount;
 		}
 
-		SafeTransferLib.safeTransferFrom(
-			currency,
-			msg.sender,
-			beneficiary,
-			price
-		);
+		SafeTransferLib.safeTransferFrom(currency, msg.sender, beneficiary, price);
 		_mint(msg.sender, id, amount, '');
 	}
 
 	function open(uint256 id, uint32 amount) public {
 		_burn(msg.sender, id, amount);
-		openChests.mint(msg.sender, id, amount);
 	}
 }
