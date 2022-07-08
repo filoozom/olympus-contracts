@@ -54,14 +54,11 @@ contract Characters is ERC721 {
 		uint256 id,
 		Rarities rarity
 	) public {
-		uint256 length = characters.length;
-		_mint(to, length);
-		characters[length] = Character({
-			id: id,
-			nickname: '',
-			level: 1,
-			rarity: rarity
-		});
+		require(id < 6, 'UNKNOWN_CHARACTER');
+		characters.push(
+			Character({ id: id, nickname: '', level: 1, rarity: rarity })
+		);
+		_mint(to, characters.length);
 		emit Minted(to, id, rarity);
 	}
 

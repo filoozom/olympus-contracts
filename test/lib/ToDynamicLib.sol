@@ -47,6 +47,17 @@ library ToDynamicLib {
 		}
 	}
 
+	function toDynamic(uint8[5] memory array)
+		public
+		pure
+		returns (uint8[] memory result)
+	{
+		result = new uint8[](array.length);
+		for (uint256 i = 0; i < array.length; i++) {
+			result[i] = array[i];
+		}
+	}
+
 	// uint16
 	function toDynamic(uint16[1] memory array)
 		public
