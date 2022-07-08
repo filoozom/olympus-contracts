@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 // Custom
 import { Probabilities } from 'src/lib/Randomness.sol';
-import { Settings, ChestConfigs, Settings, Chests } from 'src/Chests.sol';
+import { Settings, ChestConfigs, Settings, Chest } from 'src/Chests.sol';
 
 // Lib
 import { ToDynamicLib } from '../lib/ToDynamicLib.sol';
