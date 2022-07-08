@@ -6,13 +6,19 @@ import 'forge-std/Test.sol';
 import {Characters} from 'src/Characters.sol';
 import {Training} from 'src/Training.sol';
 import {Probabilities} from 'src/lib/Randomness.sol';
+import {EvolvingStones} from 'src/EvolvingStones.sol';
 
 contract TrainingTest is Test {
 	Characters characters;
 	Training training;
 
 	function setUp() public {
-		characters = new Characters('Name', 'Symbol');
+		characters = new Characters(
+			'Name',
+			'Symbol',
+			EvolvingStones(address(0)),
+			new uint8[](0)
+		);
 		training = new Training(characters, getDurations(), getProbabilities());
 	}
 
