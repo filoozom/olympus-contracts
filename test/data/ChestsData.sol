@@ -3,20 +3,16 @@ pragma solidity ^0.8.13;
 
 // Custom
 import { Probabilities } from 'src/lib/Randomness.sol';
-import { ProbabilityNames, ProbabilityConfigs, ProbabilityNames } from 'src/Chests.sol';
+import { ProbabilityNames, ChestConfigs, ProbabilityNames } from 'src/Chests.sol';
 
 // Lib
 import { ToDynamicLib } from '../lib/ToDynamicLib.sol';
 import { ProbabilitiesLib } from '../lib/ProbabilitiesLib.sol';
 
 library ChestsData {
-	function getCommonChestConfigs()
-		public
-		pure
-		returns (ProbabilityConfigs[] memory configs)
-	{
+	function getConfigs() public pure returns (ChestConfigs[] memory configs) {
 		uint256 i = 0;
-		configs = new ProbabilityConfigs[](20);
+		configs = new ChestConfigs[](20);
 
 		// Common chest
 		configs[i++] = getCommonChestEvolvingStoneConfig();
@@ -51,7 +47,7 @@ library ChestsData {
 	function getCommonChestEvolvingStoneConfig()
 		public
 		pure
-		returns (ProbabilityConfigs memory)
+		returns (ChestConfigs memory)
 	{
 		return
 			ProbabilitiesLib.createConfig(
@@ -65,7 +61,7 @@ library ChestsData {
 	function getCommonChestEvolvingPowderConfig()
 		public
 		pure
-		returns (ProbabilityConfigs memory)
+		returns (ChestConfigs memory)
 	{
 		return
 			ProbabilitiesLib.createConfig(
@@ -79,7 +75,7 @@ library ChestsData {
 	function getCommonChestOlympConfig()
 		public
 		pure
-		returns (ProbabilityConfigs memory)
+		returns (ChestConfigs memory)
 	{
 		return
 			ProbabilitiesLib.createConfig(
@@ -93,7 +89,7 @@ library ChestsData {
 	function getCommonChestCharacterRarityConfig()
 		public
 		pure
-		returns (ProbabilityConfigs memory)
+		returns (ChestConfigs memory)
 	{
 		// TODO: Should only get a character with 40% chance
 		return
@@ -108,7 +104,7 @@ library ChestsData {
 	function getCommonChestCharacterConfig()
 		public
 		pure
-		returns (ProbabilityConfigs memory)
+		returns (ChestConfigs memory)
 	{
 		return
 			ProbabilitiesLib.createConfig(
@@ -123,7 +119,7 @@ library ChestsData {
 	function getUncommonChestEvolvingStoneConfig()
 		public
 		pure
-		returns (ProbabilityConfigs memory)
+		returns (ChestConfigs memory)
 	{
 		return
 			ProbabilitiesLib.createConfig(
@@ -137,7 +133,7 @@ library ChestsData {
 	function getUncommonChestEvolvingPowderConfig()
 		public
 		pure
-		returns (ProbabilityConfigs memory)
+		returns (ChestConfigs memory)
 	{
 		return
 			ProbabilitiesLib.createConfig(
@@ -151,7 +147,7 @@ library ChestsData {
 	function getUncommonChestOlympConfig()
 		public
 		pure
-		returns (ProbabilityConfigs memory)
+		returns (ChestConfigs memory)
 	{
 		return
 			ProbabilitiesLib.createConfig(
@@ -165,7 +161,7 @@ library ChestsData {
 	function getUncommonChestCharacterRarityConfig()
 		public
 		pure
-		returns (ProbabilityConfigs memory)
+		returns (ChestConfigs memory)
 	{
 		return
 			ProbabilitiesLib.createConfig(
@@ -179,7 +175,7 @@ library ChestsData {
 	function getUncommonChestCharacterConfig()
 		public
 		pure
-		returns (ProbabilityConfigs memory)
+		returns (ChestConfigs memory)
 	{
 		return
 			ProbabilitiesLib.createConfig(
@@ -194,7 +190,7 @@ library ChestsData {
 	function getRareChestEvolvingStoneConfig()
 		public
 		pure
-		returns (ProbabilityConfigs memory)
+		returns (ChestConfigs memory)
 	{
 		return
 			ProbabilitiesLib.createConfig(
@@ -208,7 +204,7 @@ library ChestsData {
 	function getRareChestEvolvingPowderConfig()
 		public
 		pure
-		returns (ProbabilityConfigs memory)
+		returns (ChestConfigs memory)
 	{
 		return
 			ProbabilitiesLib.createConfig(
@@ -219,11 +215,7 @@ library ChestsData {
 			);
 	}
 
-	function getRareChestOlympConfig()
-		public
-		pure
-		returns (ProbabilityConfigs memory)
-	{
+	function getRareChestOlympConfig() public pure returns (ChestConfigs memory) {
 		return
 			ProbabilitiesLib.createConfig(
 				0,
@@ -236,7 +228,7 @@ library ChestsData {
 	function getRareChestCharacterRarityConfig()
 		public
 		pure
-		returns (ProbabilityConfigs memory)
+		returns (ChestConfigs memory)
 	{
 		return
 			ProbabilitiesLib.createConfig(
@@ -250,7 +242,7 @@ library ChestsData {
 	function getRareChestCharacterConfig()
 		public
 		pure
-		returns (ProbabilityConfigs memory)
+		returns (ChestConfigs memory)
 	{
 		return
 			ProbabilitiesLib.createConfig(
@@ -265,7 +257,7 @@ library ChestsData {
 	function getLegendaryChestEvolvingStoneConfig()
 		public
 		pure
-		returns (ProbabilityConfigs memory)
+		returns (ChestConfigs memory)
 	{
 		return
 			ProbabilitiesLib.createConfig(
@@ -279,7 +271,7 @@ library ChestsData {
 	function getLegendaryChestEvolvingPowderConfig()
 		public
 		pure
-		returns (ProbabilityConfigs memory)
+		returns (ChestConfigs memory)
 	{
 		return
 			ProbabilitiesLib.createConfig(
@@ -293,7 +285,7 @@ library ChestsData {
 	function getLegendaryChestOlympConfig()
 		public
 		pure
-		returns (ProbabilityConfigs memory)
+		returns (ChestConfigs memory)
 	{
 		return
 			ProbabilitiesLib.createConfig(
@@ -307,7 +299,7 @@ library ChestsData {
 	function getLegendaryChestCharacterRarityConfig()
 		public
 		pure
-		returns (ProbabilityConfigs memory)
+		returns (ChestConfigs memory)
 	{
 		return
 			ProbabilitiesLib.createConfig(
@@ -321,7 +313,7 @@ library ChestsData {
 	function getLegendaryChestCharacterConfig()
 		public
 		pure
-		returns (ProbabilityConfigs memory)
+		returns (ChestConfigs memory)
 	{
 		return
 			ProbabilitiesLib.createConfig(

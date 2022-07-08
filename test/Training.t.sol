@@ -5,7 +5,6 @@ import 'forge-std/Test.sol';
 // Custom
 import { Characters } from 'src/Characters.sol';
 import { Training } from 'src/Training.sol';
-import { Probabilities } from 'src/lib/Randomness.sol';
 import { EvolvingStones } from 'src/EvolvingStones.sol';
 
 // Data

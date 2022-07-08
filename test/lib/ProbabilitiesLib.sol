@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 // Custom
 import { Probabilities } from 'src/lib/Randomness.sol';
-import { ProbabilityNames, ProbabilityConfigs } from 'src/Chests.sol';
+import { ProbabilityNames, ChestConfigs } from 'src/Chests.sol';
 
 library ProbabilitiesLib {
 	function sum(uint8[] memory array) private pure returns (uint16 result) {
@@ -30,9 +30,9 @@ library ProbabilitiesLib {
 		ProbabilityNames name,
 		uint8[] memory shares,
 		uint16[] memory results
-	) public pure returns (ProbabilityConfigs memory config) {
+	) public pure returns (ChestConfigs memory config) {
 		return
-			ProbabilityConfigs({
+			ChestConfigs({
 				chest: chest,
 				name: name,
 				probabilities: create(shares, results)

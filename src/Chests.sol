@@ -9,44 +9,67 @@ import { SafeTransferLib } from 'solmate/utils/SafeTransferLib.sol';
 
 // Custom
 import { Randomness, Probabilities } from './lib/Randomness.sol';
+import { Characters } from './Characters.sol';
 
-enum Characters {
-	Medusa,
-	Apollo,
-	Achilles,
-	Titan,
-	Chimera,
-	Zeus
+enum ProbabilityNames {
+	EvolvingStone,
+	EvolvingPowder,
+	Olymp,
+	CharacterRarity,
+	Character
+}
+
+struct Chest {
+	uint256 minted;
+	uint256 max;
+	uint256 price;
+}
+
+struct ChestConfigs {
+	uint8 chest;
+	ProbabilityNames name;
+	Probabilities probabilities;
 }
 
 contract Chests is ERC1155, Randomness {
-	struct Chest {
-		uint256 minted;
-		uint256 max;
-		uint256 price;
-	}
-
 	event ChestOpened(address indexed owner, uint256 indexed id);
 
 	ERC20 currency;
 	address beneficiary;
 	Chest[] chests;
-	ERC1155 characters;
+	Characters characters;
+
+	mapping(uint256 => mapping(ProbabilityNames => Probabilities)) probabilities;
 
 	constructor(
 		ERC20 _currency,
 		address _beneficiary,
-		ERC1155 _characters,
-		Chest[] memory _chests
+		Characters _characters,
+		Chest[] memory _chests,
+		ChestConfigs[] memory _configs
 	) {
 		currency = _currency;
 		beneficiary = _beneficiary;
 		characters = _characters;
+		setChests(_chests);
+		setConfigs(_configs);
+	}
 
+	function setConfigs(ChestConfigs[] memory _configs) private {
+		uint256 length = _configs.length;
+		for (uint256 i = 0; i < length; ) {
+			ChestConfigs memory config = _configs[i];
+			probabilities[config.chest][config.name] = config.probabilities;
+			unchecked {
+				++i;
+			}
+		}
+	}
+
+	function setChests(Chest[] memory _chests) private {
 		uint256 length = _chests.length;
 		for (uint256 i = 0; i < length; ) {
 			chests[i] = _chests[i];
-
 			unchecked {
 				++i;
 			}
