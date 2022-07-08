@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 import 'forge-std/Test.sol';
 
 // Custom
-import {RandomnessMock, Probabilities} from './mocks/RandomnessMock.sol';
+import { RandomnessMock, Probabilities } from './mocks/RandomnessMock.sol';
 
 contract RandomnessTest is Test {
 	function setUp() public {}
@@ -18,7 +18,9 @@ contract RandomnessTest is Test {
 		RandomnessMock random = new RandomnessMock(probabilities);
 		uint16 number = random.getRandomNumber();
 
-		assertTrue(number == 20 || number == 30 || number == 50 || number == 80);
+		assertTrue(
+			number == 20 || number == 30 || number == 50 || number == 80
+		);
 	}
 
 	function testAccuracy() public {

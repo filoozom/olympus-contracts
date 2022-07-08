@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 // Solmate
-import {ERC20} from 'solmate/tokens/ERC20.sol';
+import { ERC20 } from 'solmate/tokens/ERC20.sol';
 
 abstract contract BurnableERC20 is ERC20 {
 	function burnFrom(address from, uint256 amount) public {

@@ -3,10 +3,10 @@ pragma solidity ^0.8.13;
 import 'forge-std/Test.sol';
 
 // Custom
-import {Characters} from 'src/Characters.sol';
-import {Training} from 'src/Training.sol';
-import {Probabilities} from 'src/lib/Randomness.sol';
-import {EvolvingStones} from 'src/EvolvingStones.sol';
+import { Characters } from 'src/Characters.sol';
+import { Training } from 'src/Training.sol';
+import { Probabilities } from 'src/lib/Randomness.sol';
+import { EvolvingStones } from 'src/EvolvingStones.sol';
 
 contract TrainingTest is Test {
 	Characters characters;

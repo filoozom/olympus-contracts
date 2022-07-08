@@ -2,13 +2,13 @@
 pragma solidity ^0.8.13;
 
 // Solmate
-import {ERC20} from 'solmate/tokens/ERC20.sol';
-import {ERC721} from 'solmate/tokens/ERC721.sol';
-import {ERC1155} from 'solmate/tokens/ERC1155.sol';
-import {SafeTransferLib} from 'solmate/utils/SafeTransferLib.sol';
+import { ERC20 } from 'solmate/tokens/ERC20.sol';
+import { ERC721 } from 'solmate/tokens/ERC721.sol';
+import { ERC1155 } from 'solmate/tokens/ERC1155.sol';
+import { SafeTransferLib } from 'solmate/utils/SafeTransferLib.sol';
 
 // Custom
-import {Randomness, Probabilities} from './lib/Randomness.sol';
+import { Randomness, Probabilities } from './lib/Randomness.sol';
 
 enum Characters {
 	Medusa,
@@ -68,7 +68,12 @@ contract Chests is ERC1155, Randomness {
 			price = chest.price * amount;
 		}
 
-		SafeTransferLib.safeTransferFrom(currency, msg.sender, beneficiary, price);
+		SafeTransferLib.safeTransferFrom(
+			currency,
+			msg.sender,
+			beneficiary,
+			price
+		);
 		_mint(msg.sender, id, amount, '');
 	}
 

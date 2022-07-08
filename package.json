@@ -9,7 +9,26 @@
 		"src/**/*.sol"
 	],
 	"devDependencies": {
+		"husky": "^8.0.1",
+		"lint-staged": "^13.0.3",
 		"prettier": "^2.7.1",
 		"prettier-plugin-solidity": "^1.0.0-beta.19"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
+	"lint-staged": {
+		"linters": {
+			"*.{sol}": [
+				"prettier --write",
+				"git add"
+			]
+		},
+		"ignore": [
+			"lib",
+			"out"
+		]
 	}
 }

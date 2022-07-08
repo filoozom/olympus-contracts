@@ -2,13 +2,13 @@
 pragma solidity ^0.8.13;
 
 // Solmate
-import {ERC20} from 'solmate/tokens/ERC20.sol';
-import {ERC721} from 'solmate/tokens/ERC721.sol';
-import {ERC1155} from 'solmate/tokens/ERC1155.sol';
-import {SafeTransferLib} from 'solmate/utils/SafeTransferLib.sol';
+import { ERC20 } from 'solmate/tokens/ERC20.sol';
+import { ERC721 } from 'solmate/tokens/ERC721.sol';
+import { ERC1155 } from 'solmate/tokens/ERC1155.sol';
+import { SafeTransferLib } from 'solmate/utils/SafeTransferLib.sol';
 
 // Custom
-import {EvolvingStones} from './EvolvingStones.sol';
+import { EvolvingStones } from './EvolvingStones.sol';
 
 contract Characters is ERC721 {
 	event Minted(address indexed owner, uint256 indexed id, Rarities rarity);

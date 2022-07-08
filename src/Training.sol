@@ -2,9 +2,9 @@
 pragma solidity ^0.8.13;
 
 // Custom
-import {Characters} from './Characters.sol';
-import {MintableERC20} from './lib/MintableERC20.sol';
-import {Randomness, Probabilities} from './lib/Randomness.sol';
+import { Characters } from './Characters.sol';
+import { MintableERC20 } from './lib/MintableERC20.sol';
+import { Randomness, Probabilities } from './lib/Randomness.sol';
 
 struct Session {
 	uint256 end;
@@ -45,7 +45,7 @@ contract Training is Randomness {
 		require(sessions[id].end == 0, 'ALREADY_TRAINING');
 		require(characters.ownerOf(id) == msg.sender, 'NOT_AUTHORIZED');
 
-		sessions[id] = Session({end: block.timestamp + duration, time: time});
+		sessions[id] = Session({ end: block.timestamp + duration, time: time });
 	}
 
 	function endTrain(uint256 id) public {
