@@ -68,12 +68,7 @@ contract Chests is ERC1155, Randomness {
 			price = chest.price * amount;
 		}
 
-		SafeTransferLib.safeTransferFrom(
-			currency,
-			msg.sender,
-			beneficiary,
-			price
-		);
+		SafeTransferLib.safeTransferFrom(currency, msg.sender, beneficiary, price);
 		_mint(msg.sender, id, amount, '');
 	}
 
