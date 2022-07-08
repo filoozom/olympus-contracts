@@ -7,11 +7,12 @@ import { Authority } from 'solmate/auth/Auth.sol';
 
 // Custom
 import { Characters } from 'src/Characters.sol';
-import { Chests } from 'src/Characters.sol';
+import { Chests } from 'src/Chests.sol';
 import { EvolvingStones } from 'src/EvolvingStones.sol';
 import { Olymp } from 'src/Olymp.sol';
 import { Powder } from 'src/Powder.sol';
 import { Training } from 'src/Training.sol';
+import { MintableERC20 } from 'src/lib/MintableERC20.sol';
 
 enum Roles {
 	PowderMinter,
@@ -30,53 +31,56 @@ library AuthorityLib {
 		return new RolesAuthority(owner, Authority(address(0)));
 	}
 
-	function setupCharacters(Authority authority, Characters characters) {
+	function setupCharacters(RolesAuthority authority, Characters characters)
+		public
+	{
 		authority.setRoleCapability(
-			Roles.CharactersMinter,
-			characters,
+			uint8(Roles.CharactersMinter),
+			address(characters),
 			Characters.mint.selector,
 			true
 		);
 	}
 
-	function setupChests(Authority authority, Chests chests) {
-		authority.setUserRole(chests, Roles.PowderMinter, true);
-		authority.setUserRole(chests, Roles.OlympMinter, true);
-		authority.setUserRole(chests, Roles.EvolvingStonesMinter, true);
-		authority.setUserRole(chests, Roles.CharactersMinter, true);
+	function setupChests(RolesAuthority authority, Chests chests) public {
+		address addr = address(chests);
+		authority.setUserRole(addr, uint8(Roles.PowderMinter), true);
+		authority.setUserRole(addr, uint8(Roles.OlympMinter), true);
+		authority.setUserRole(addr, uint8(Roles.EvolvingStonesMinter), true);
+		authority.setUserRole(addr, uint8(Roles.CharactersMinter), true);
 	}
 
 	function setupEvolvingStones(
-		Authority authority,
+		RolesAuthority authority,
 		EvolvingStones evolvingStones
-	) {
+	) public {
 		authority.setRoleCapability(
-			Roles.EvolvingStonesMinter,
-			evolvingStones,
-			EvolvingStones.mint.selector,
+			uint8(Roles.EvolvingStonesMinter),
+			address(evolvingStones),
+			MintableERC20.mint.selector,
 			true
 		);
 	}
 
-	function setupOlymp(Authority authority, Olymp olymp) {
+	function setupOlymp(RolesAuthority authority, Olymp olymp) public {
 		authority.setRoleCapability(
-			Roles.OlympMinter,
-			olymp,
-			Olymp.mint.selector,
+			uint8(Roles.OlympMinter),
+			address(olymp),
+			MintableERC20.mint.selector,
 			true
 		);
 	}
 
-	function setupPowder(Authority authority, Powder powder) {
+	function setupPowder(RolesAuthority authority, Powder powder) public {
 		authority.setRoleCapability(
-			Roles.PowderMinter,
-			powder,
-			Powder.mint.selector,
+			uint8(Roles.PowderMinter),
+			address(powder),
+			MintableERC20.mint.selector,
 			true
 		);
 	}
 
-	function setupTraining(Authority authority, Training training) {
-		authority.setUserRole(training, Roles.PowderMinter, true);
+	function setupTraining(RolesAuthority authority, Training training) public {
+		authority.setUserRole(address(training), uint8(Roles.PowderMinter), true);
 	}
 }
