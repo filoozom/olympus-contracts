@@ -55,10 +55,10 @@ contract Characters is ERC721 {
 		Rarities rarity
 	) public {
 		require(id < 6, 'UNKNOWN_CHARACTER');
+		_mint(to, characters.length);
 		characters.push(
 			Character({ id: id, nickname: '', level: 1, rarity: rarity })
 		);
-		_mint(to, characters.length);
 		emit Minted(to, id, rarity);
 	}
 
@@ -73,8 +73,13 @@ contract Characters is ERC721 {
 		Character storage character = characters[id];
 		require(character.level < getMaxLevel(id), 'ALREADY_MAX_LEVEL');
 
-		evolvingStones.burnFrom(msg.sender, levelCosts[characters[id].level - 1]);
-		emit Evolve(id, ++characters[id].level);
+		uint8 index;
+		unchecked {
+			index = character.level - 1;
+		}
+
+		evolvingStones.burnFrom(msg.sender, levelCosts[index]);
+		emit Evolve(id, ++character.level);
 	}
 
 	// ERC721

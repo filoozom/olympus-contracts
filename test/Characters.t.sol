@@ -11,6 +11,9 @@ import { CharactersData } from './data/CharactersData.sol';
 import { AuthorityData } from './data/AuthorityData.sol';
 
 contract CharactersTest is Test {
+	event Minted(address indexed owner, uint256 indexed id, Rarities rarity);
+	event Evolve(uint256 indexed id, uint256 newLevel);
+
 	EvolvingStones stones;
 	Characters characters;
 
@@ -25,12 +28,17 @@ contract CharactersTest is Test {
 		characters = new Characters(
 			'Name',
 			'Symbol',
-			EvolvingStones(address(0)),
+			EvolvingStones(address(stones)),
 			CharactersData.getLevelCosts()
 		);
 	}
 
 	function testCanMint() public {
+		// Expect event
+		vm.expectEmit(true, true, true, true);
+		emit Minted(address(1), 3, Rarities.Gold);
+
+		// Mint
 		characters.mint(address(1), 3, Rarities.Gold);
 
 		(
@@ -55,5 +63,97 @@ contract CharactersTest is Test {
 	function testCannotMintUnknownCharacter() public {
 		vm.expectRevert('UNKNOWN_CHARACTER');
 		characters.mint(address(1), 6, Rarities.Normal);
+	}
+
+	function testCanEvolve() public {
+		// Mint stones and approve
+		stones.mint(address(this), 100);
+		stones.approve(address(characters), 100);
+
+		// Mint a character
+		characters.mint(address(this), 0, Rarities.Normal);
+
+		// Expect event
+		vm.expectEmit(true, true, true, false);
+		emit Evolve(0, 2);
+
+		// Evolve
+		characters.evolve(0);
+	}
+
+	function testRequiresRightAmountOfStones() public {
+		characters.mint(address(this), 0, Rarities.Normal);
+
+		// Test with 0 stones
+		vm.expectRevert(stdError.arithmeticError);
+		characters.evolve(0);
+
+		// Test with 3 stones
+		stones.mint(address(this), 3);
+		stones.approve(address(characters), 3);
+		vm.expectRevert(stdError.arithmeticError);
+		characters.evolve(0);
+
+		// Test with 4 stones
+		stones.mint(address(this), 1);
+		stones.approve(address(characters), 4);
+		characters.evolve(0);
+	}
+
+	function testCanEvolveNormalToMaxLevel() public {
+		// Mint stones and approve
+		stones.mint(address(this), 100);
+		stones.approve(address(characters), 100);
+
+		// Mint a character
+		characters.mint(address(this), 0, Rarities.Normal);
+
+		// Evolve to max level
+		characters.evolve(0);
+		characters.evolve(0);
+		characters.evolve(0);
+
+		// Try one level too far
+		vm.expectRevert('ALREADY_MAX_LEVEL');
+		characters.evolve(0);
+	}
+
+	function testCanEvolveGoldToMaxLevel() public {
+		// Mint stones and approve
+		stones.mint(address(this), 100);
+		stones.approve(address(characters), 100);
+
+		// Mint a character
+		characters.mint(address(this), 0, Rarities.Gold);
+
+		// Evolve to max level
+		characters.evolve(0);
+		characters.evolve(0);
+		characters.evolve(0);
+		characters.evolve(0);
+
+		// Try one level too far
+		vm.expectRevert('ALREADY_MAX_LEVEL');
+		characters.evolve(0);
+	}
+
+	function testCanEvolveDiamondToMaxLevel() public {
+		// Mint stones and approve
+		stones.mint(address(this), 100);
+		stones.approve(address(characters), 100);
+
+		// Mint a character
+		characters.mint(address(this), 0, Rarities.Diamond);
+
+		// Evolve to max level
+		characters.evolve(0);
+		characters.evolve(0);
+		characters.evolve(0);
+		characters.evolve(0);
+		characters.evolve(0);
+
+		// Try one level too far
+		vm.expectRevert('ALREADY_MAX_LEVEL');
+		characters.evolve(0);
 	}
 }
