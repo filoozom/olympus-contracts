@@ -82,13 +82,6 @@ contract Characters is ERC721 {
 		emit Evolve(id, ++character.level);
 	}
 
-	// ERC721
-	function tokenURI(
-		uint256 /*id*/
-	) public view virtual override returns (string memory) {
-		return '';
-	}
-
 	function getMaxLevel(uint256 id) public view returns (uint8) {
 		Character storage character = characters[id];
 
@@ -101,5 +94,12 @@ contract Characters is ERC721 {
 		}
 
 		return 4;
+	}
+
+	// ERC721
+	function tokenURI(
+		uint256 /*id*/
+	) public view virtual override returns (string memory) {
+		return '';
 	}
 }
