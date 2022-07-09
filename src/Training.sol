@@ -43,7 +43,7 @@ contract Training is Randomness {
 		uint256 duration = durations[time];
 		require(duration > 0, 'WRONG_DURATION');
 		require(sessions[id].end == 0, 'ALREADY_TRAINING');
-		require(characters.ownerOf(id) == msg.sender, 'NOT_AUTHORIZED');
+		require(characters.ownerOf(id) == msg.sender, 'UNAUTHORIZED');
 
 		sessions[id] = Session({ end: block.timestamp + duration, time: time });
 	}
@@ -51,7 +51,7 @@ contract Training is Randomness {
 	function endTrain(uint256 id) public {
 		Session storage training = sessions[id];
 		require(training.end > block.timestamp, 'NOT_DONE');
-		require(characters.ownerOf(id) == msg.sender, 'NOT_AUTHORIZED');
+		require(characters.ownerOf(id) == msg.sender, 'UNAUTHORIZED');
 
 		training.end = 0;
 

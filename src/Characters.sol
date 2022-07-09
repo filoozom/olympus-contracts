@@ -32,7 +32,7 @@ struct Character {
 
 contract Characters is ERC721 {
 	event Minted(address indexed owner, uint256 indexed id, Rarities rarity);
-	event SetName(uint256 indexed id, string name);
+	event SetNickname(uint256 indexed id, string name);
 	event Evolve(uint256 indexed id, uint256 newLevel);
 
 	BurnableERC20 public evolvingStones;
@@ -63,13 +63,13 @@ contract Characters is ERC721 {
 	}
 
 	function setNickname(uint256 id, string calldata nickname) public {
-		require(msg.sender == _ownerOf[id], 'NOT_AUTHORIZED');
+		require(msg.sender == _ownerOf[id], 'UNAUTHORIZED');
 		characters[id].nickname = nickname;
-		emit SetName(id, nickname);
+		emit SetNickname(id, nickname);
 	}
 
 	function evolve(uint256 id) public {
-		require(msg.sender == _ownerOf[id], 'NOT_AUTHORIZED');
+		require(msg.sender == _ownerOf[id], 'UNAUTHORIZED');
 		Character storage character = characters[id];
 		require(character.level < getMaxLevel(id), 'ALREADY_MAX_LEVEL');
 

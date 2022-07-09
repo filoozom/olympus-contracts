@@ -12,6 +12,7 @@ import { AuthorityData } from './data/AuthorityData.sol';
 
 contract CharactersTest is Test {
 	event Minted(address indexed owner, uint256 indexed id, Rarities rarity);
+	event SetNickname(uint256 indexed id, string name);
 	event Evolve(uint256 indexed id, uint256 newLevel);
 
 	EvolvingStones stones;
@@ -170,5 +171,32 @@ contract CharactersTest is Test {
 
 		vm.expectRevert(stdError.indexOOBError);
 		characters.getMaxLevel(4);
+	}
+
+	function testSetNickname() public {
+		// Mint a character
+		characters.mint(address(this), 0, Rarities.Diamond);
+
+		// Expect event
+		vm.expectEmit(true, true, true, false);
+		emit SetNickname(0, 'filoozom');
+
+		// Change the character's nickname
+		characters.setNickname(0, 'filoozom');
+	}
+
+	function testCannotSetNicknameIfNotOwner() public {
+		// Mint a character
+		characters.mint(address(1), 0, Rarities.Diamond);
+
+		// Try to set the nickname
+		vm.prank(address(2));
+		vm.expectRevert('UNAUTHORIZED');
+		characters.setNickname(0, 'filoozom');
+	}
+
+	function testCannotSetNicknameOfUnknownCharacter() public {
+		vm.expectRevert('UNAUTHORIZED');
+		characters.setNickname(0, 'filoozom');
 	}
 }
