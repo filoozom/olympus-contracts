@@ -156,4 +156,19 @@ contract CharactersTest is Test {
 		vm.expectRevert('ALREADY_MAX_LEVEL');
 		characters.evolve(0);
 	}
+
+	function testGetMaxLevel() public {
+		characters.mint(address(1), 0, Rarities.Diamond);
+		characters.mint(address(1), 1, Rarities.Normal);
+		characters.mint(address(1), 2, Rarities.Gold);
+		characters.mint(address(1), 3, Rarities.Diamond);
+
+		assertEq(characters.getMaxLevel(0), 6);
+		assertEq(characters.getMaxLevel(1), 4);
+		assertEq(characters.getMaxLevel(2), 5);
+		assertEq(characters.getMaxLevel(3), 6);
+
+		vm.expectRevert(stdError.indexOOBError);
+		characters.getMaxLevel(4);
+	}
 }
