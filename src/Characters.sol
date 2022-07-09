@@ -73,12 +73,12 @@ contract Characters is ERC721 {
 		Character storage character = characters[id];
 		require(character.level < getMaxLevel(id), 'ALREADY_MAX_LEVEL');
 
-		uint8 index;
+		uint8 cost;
 		unchecked {
-			index = character.level - 1;
+			cost = levelCosts[character.level - 1];
 		}
 
-		evolvingStones.burnFrom(msg.sender, levelCosts[index]);
+		evolvingStones.burnFrom(msg.sender, cost);
 		emit Evolve(id, ++character.level);
 	}
 
