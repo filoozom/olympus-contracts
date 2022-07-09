@@ -74,8 +74,6 @@ contract Characters is ERC721 {
 		require(character.level < getMaxLevel(id), 'ALREADY_MAX_LEVEL');
 
 		evolvingStones.burnFrom(msg.sender, levelCosts[characters[id].level - 1]);
-
-		characters[id].level++;
 		emit Evolve(id, ++characters[id].level);
 	}
 
