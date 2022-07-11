@@ -9,7 +9,7 @@ import { Authority } from 'solmate/auth/Auth.sol';
 import { BurnableERC20 } from './lib/BurnableERC20.sol';
 import { MintableERC20 } from './lib/MintableERC20.sol';
 
-contract EvolvingStones is BurnableERC20, MintableERC20 {
+contract Stones is BurnableERC20, MintableERC20 {
 	constructor(
 		string memory _name,
 		string memory _symbol,

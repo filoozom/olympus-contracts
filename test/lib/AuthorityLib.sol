@@ -8,16 +8,16 @@ import { Authority } from 'solmate/auth/Auth.sol';
 // Custom
 import { Characters } from 'src/Characters.sol';
 import { Chests } from 'src/Chests.sol';
-import { EvolvingStones } from 'src/EvolvingStones.sol';
 import { Furnace } from 'src/Furnace.sol';
 import { Olymp } from 'src/Olymp.sol';
 import { Powder } from 'src/Powder.sol';
+import { Stones } from 'src/Stones.sol';
 import { Training } from 'src/Training.sol';
 import { MintableERC20 } from 'src/lib/MintableERC20.sol';
 
 enum Roles {
 	PowderMinter,
-	EvolvingStonesMinter,
+	StonesMinter,
 	OlympMinter,
 	CharactersMinter
 }
@@ -47,28 +47,12 @@ library AuthorityLib {
 		address addr = address(chests);
 		authority.setUserRole(addr, uint8(Roles.PowderMinter), true);
 		authority.setUserRole(addr, uint8(Roles.OlympMinter), true);
-		authority.setUserRole(addr, uint8(Roles.EvolvingStonesMinter), true);
+		authority.setUserRole(addr, uint8(Roles.StonesMinter), true);
 		authority.setUserRole(addr, uint8(Roles.CharactersMinter), true);
 	}
 
-	function setupEvolvingStones(
-		RolesAuthority authority,
-		EvolvingStones evolvingStones
-	) public {
-		authority.setRoleCapability(
-			uint8(Roles.EvolvingStonesMinter),
-			address(evolvingStones),
-			MintableERC20.mint.selector,
-			true
-		);
-	}
-
 	function setupFurnace(RolesAuthority authority, Furnace furnace) public {
-		authority.setUserRole(
-			address(furnace),
-			uint8(Roles.EvolvingStonesMinter),
-			true
-		);
+		authority.setUserRole(address(furnace), uint8(Roles.StonesMinter), true);
 	}
 
 	function setupOlymp(RolesAuthority authority, Olymp olymp) public {
@@ -84,6 +68,15 @@ library AuthorityLib {
 		authority.setRoleCapability(
 			uint8(Roles.PowderMinter),
 			address(powder),
+			MintableERC20.mint.selector,
+			true
+		);
+	}
+
+	function setupStones(RolesAuthority authority, Stones stones) public {
+		authority.setRoleCapability(
+			uint8(Roles.StonesMinter),
+			address(stones),
 			MintableERC20.mint.selector,
 			true
 		);

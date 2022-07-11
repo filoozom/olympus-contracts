@@ -47,7 +47,7 @@ contract Chests is ERC1155, Randomness {
 	Characters characters;
 	MintableERC20 olymp;
 	MintableERC20 powder;
-	MintableERC20 evolvingStones;
+	MintableERC20 stones;
 
 	constructor(
 		ERC20 _currency,
@@ -55,7 +55,7 @@ contract Chests is ERC1155, Randomness {
 		Characters _characters,
 		MintableERC20 _olymp,
 		MintableERC20 _powder,
-		MintableERC20 _evolvingStones,
+		MintableERC20 _stones,
 		Chest[] memory _chests,
 		ChestConfigs[] memory _configs
 	) {
@@ -67,7 +67,7 @@ contract Chests is ERC1155, Randomness {
 		characters = _characters;
 		olymp = _olymp;
 		powder = _powder;
-		evolvingStones = _evolvingStones;
+		stones = _stones;
 
 		// Chest config
 		setChests(_chests);
@@ -125,7 +125,7 @@ contract Chests is ERC1155, Randomness {
 		// Get evolving stones to mint
 		(result, random) = getProbability(id, Settings.EvolvingStone, random);
 		if (result > 0) {
-			evolvingStones.mint(msg.sender, result);
+			stones.mint(msg.sender, result);
 		}
 
 		// Get powder to mint

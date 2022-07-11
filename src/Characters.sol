@@ -35,17 +35,17 @@ contract Characters is ERC721 {
 	event SetNickname(uint256 indexed id, string name);
 	event Evolve(uint256 indexed id, uint256 newLevel);
 
-	BurnableERC20 public evolvingStones;
+	BurnableERC20 public stones;
 	Character[] public characters;
 	uint8[] public levelCosts;
 
 	constructor(
 		string memory _name,
 		string memory _symbol,
-		BurnableERC20 _evolvingStones,
+		BurnableERC20 _stones,
 		uint8[] memory _levelCosts
 	) ERC721(_name, _symbol) {
-		evolvingStones = _evolvingStones;
+		stones = _stones;
 		levelCosts = _levelCosts;
 	}
 
@@ -78,7 +78,7 @@ contract Characters is ERC721 {
 			cost = levelCosts[character.level - 1];
 		}
 
-		evolvingStones.burnFrom(msg.sender, cost);
+		stones.burnFrom(msg.sender, cost);
 		emit Evolve(id, ++character.level);
 	}
 

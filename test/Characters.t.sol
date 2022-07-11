@@ -4,7 +4,7 @@ import 'forge-std/Test.sol';
 
 // Custom
 import { Characters, Rarities, Character } from 'src/Characters.sol';
-import { EvolvingStones } from 'src/EvolvingStones.sol';
+import { Stones } from 'src/Stones.sol';
 
 // Data
 import { CharactersData } from './data/CharactersData.sol';
@@ -15,11 +15,11 @@ contract CharactersTest is Test {
 	event SetNickname(uint256 indexed id, string name);
 	event Evolve(uint256 indexed id, uint256 newLevel);
 
-	EvolvingStones stones;
+	Stones stones;
 	Characters characters;
 
 	function setUp() public {
-		stones = new EvolvingStones(
+		stones = new Stones(
 			'Evolving Stones',
 			'EST',
 			address(this),
@@ -29,7 +29,7 @@ contract CharactersTest is Test {
 		characters = new Characters(
 			'Name',
 			'Symbol',
-			EvolvingStones(address(stones)),
+			Stones(address(stones)),
 			CharactersData.getLevelCosts()
 		);
 	}

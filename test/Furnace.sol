@@ -5,7 +5,7 @@ import 'forge-std/Test.sol';
 // Custom
 import { Furnace } from 'src/Furnace.sol';
 import { Powder } from 'src/Powder.sol';
-import { EvolvingStones } from 'src/EvolvingStones.sol';
+import { Stones } from 'src/Stones.sol';
 import { MintableERC20 } from 'src/lib/MintableERC20.sol';
 import { BurnableERC20 } from 'src/lib/BurnableERC20.sol';
 
@@ -18,7 +18,7 @@ contract FurnaceTest is Test {
 	Furnace furnace;
 
 	Powder powder;
-	EvolvingStones evolvingStones;
+	Stones stones;
 
 	function setUp() public {
 		// Tokens
@@ -28,7 +28,7 @@ contract FurnaceTest is Test {
 			address(this),
 			AuthorityData.getNull()
 		);
-		evolvingStones = new EvolvingStones(
+		stones = new Stones(
 			'Evolving Stones',
 			'EST',
 			address(this),
@@ -38,13 +38,13 @@ contract FurnaceTest is Test {
 		// Furnance
 		furnace = new Furnace(
 			BurnableERC20(powder),
-			MintableERC20(evolvingStones),
+			MintableERC20(stones),
 			100,
 			8 hours
 		);
 
 		// Set rights
-		evolvingStones.setOwner(address(furnace));
+		stones.setOwner(address(furnace));
 	}
 
 	function testCanForge() public {

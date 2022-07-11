@@ -5,7 +5,7 @@ import 'forge-std/Test.sol';
 // Custom
 import { Characters, Rarities } from 'src/Characters.sol';
 import { Training, Durations } from 'src/Training.sol';
-import { EvolvingStones } from 'src/EvolvingStones.sol';
+import { Stones } from 'src/Stones.sol';
 import { Powder } from 'src/Powder.sol';
 
 // Data
@@ -21,7 +21,7 @@ contract TrainingTest is Test {
 		characters = new Characters(
 			'Name',
 			'Symbol',
-			EvolvingStones(address(0)),
+			Stones(address(0)),
 			new uint8[](0)
 		);
 		powder = new Powder(

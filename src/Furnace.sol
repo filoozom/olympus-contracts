@@ -12,7 +12,7 @@ struct Pending {
 
 contract Furnace {
 	BurnableERC20 public powder;
-	MintableERC20 public evolvingStones;
+	MintableERC20 public stones;
 
 	uint16 public immutable cost;
 	uint32 public immutable duration;
@@ -21,12 +21,12 @@ contract Furnace {
 
 	constructor(
 		BurnableERC20 _powder,
-		MintableERC20 _evolvingStones,
+		MintableERC20 _stones,
 		uint16 _cost,
 		uint32 _duration
 	) {
 		powder = _powder;
-		evolvingStones = _evolvingStones;
+		stones = _stones;
 
 		cost = _cost;
 		duration = _duration;
@@ -49,6 +49,6 @@ contract Furnace {
 
 		// More gas efficient than `delete pendings[msg.sender]`
 		pending.end = 0;
-		evolvingStones.mint(msg.sender, pending.count);
+		stones.mint(msg.sender, pending.count);
 	}
 }

@@ -10,7 +10,7 @@ import { Authority } from 'solmate/auth/Auth.sol';
 // Custom
 import { Chests, Chest } from 'src/Chests.sol';
 import { Characters, Rarities } from 'src/Characters.sol';
-import { EvolvingStones } from 'src/EvolvingStones.sol';
+import { Stones } from 'src/Stones.sol';
 import { MintableERC20 } from 'src/lib/MintableERC20.sol';
 import { BurnableERC20 } from 'src/lib/BurnableERC20.sol';
 import { Olymp } from 'src/Olymp.sol';
@@ -29,7 +29,7 @@ contract ChestsTest is Test {
 
 	Olymp olymp;
 	Powder powder;
-	EvolvingStones evolvingStones;
+	Stones stones;
 
 	Authority authority = Authority(address(0));
 
@@ -37,19 +37,14 @@ contract ChestsTest is Test {
 		// Tokens
 		olymp = new Olymp('bOlymp', 'bOlymp', msg.sender, authority);
 		powder = new Powder('Powder', 'POW', msg.sender, authority);
-		evolvingStones = new EvolvingStones(
-			'Evolving Stones',
-			'EST',
-			msg.sender,
-			authority
-		);
+		stones = new Stones('Evolving Stones', 'EST', msg.sender, authority);
 
 		// Dependencies
 		currency = new CurrencyMock('USD', 'BUSD');
 		characters = new Characters(
 			'Name',
 			'Symbol',
-			BurnableERC20(evolvingStones),
+			BurnableERC20(stones),
 			new uint8[](0)
 		);
 
@@ -60,7 +55,7 @@ contract ChestsTest is Test {
 			characters,
 			MintableERC20(olymp),
 			MintableERC20(powder),
-			MintableERC20(evolvingStones),
+			MintableERC20(stones),
 			ChestsData.getChests(),
 			ChestsData.getConfigs()
 		);
