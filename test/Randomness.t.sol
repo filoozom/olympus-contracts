@@ -19,9 +19,7 @@ contract RandomnessTest is Test {
 		RandomnessMock random = new RandomnessMock(probabilities);
 		uint16 number = random.getRandomNumber();
 
-		assertTrue(
-			number == 20 || number == 30 || number == 50 || number == 80
-		);
+		assertTrue(number == 20 || number == 30 || number == 50 || number == 80);
 	}
 
 	function testAccuracy() public {
