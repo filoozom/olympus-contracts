@@ -60,6 +60,7 @@ contract Training is Randomness {
 		require(block.timestamp >= training.end, 'NOT_DONE');
 		require(characters.ownerOf(id) == msg.sender, 'UNAUTHORIZED');
 
+		// More gas efficient than `delete sessions[id]`
 		training.end = 0;
 
 		powder.mint(msg.sender, getRandomUint(probabilities[uint8(training.time)]));
