@@ -130,4 +130,17 @@ contract TrainingTest is Test {
 		// Try to train again (check if state was reset)
 		training.train(0, Durations.SevenDays);
 	}
+
+	function testCannotEndTrainWhileNotTraining() public {
+		characters.mint(address(this), 0, Rarities.Normal);
+
+		// Give the training contract rights to mint powder
+		powder.setOwner(address(training));
+
+		// Wrap to one day later and increase block number for randomness
+		vm.warp(block.timestamp + 86400);
+		vm.roll(64);
+		vm.expectRevert('NOT_TRAINING');
+		training.endTrain(0);
+	}
 }

@@ -13,7 +13,7 @@ enum Durations {
 }
 
 struct Session {
-	uint256 end;
+	uint64 end;
 	Durations time;
 }
 
@@ -48,15 +48,19 @@ contract Training is Randomness {
 	}
 
 	function train(uint256 id, Durations time) public {
-		uint256 duration = durations[uint8(time)];
+		uint64 duration = durations[uint8(time)];
 		require(sessions[id].end == 0, 'ALREADY_TRAINING');
 		require(characters.ownerOf(id) == msg.sender, 'UNAUTHORIZED');
 
-		sessions[id] = Session({ end: block.timestamp + duration, time: time });
+		sessions[id] = Session({
+			end: uint64(block.timestamp) + duration,
+			time: time
+		});
 	}
 
 	function endTrain(uint256 id) public {
 		Session storage training = sessions[id];
+		require(training.end > 0, 'NOT_TRAINING');
 		require(block.timestamp >= training.end, 'NOT_DONE');
 		require(characters.ownerOf(id) == msg.sender, 'UNAUTHORIZED');
 
