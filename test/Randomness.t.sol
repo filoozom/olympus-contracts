@@ -15,10 +15,13 @@ contract RandomnessTest is Test {
 			results: getResults()
 		});
 
+		vm.roll(64);
 		RandomnessMock random = new RandomnessMock(probabilities);
 		uint16 number = random.getRandomNumber();
 
-		assertTrue(number == 20 || number == 30 || number == 50 || number == 80);
+		assertTrue(
+			number == 20 || number == 30 || number == 50 || number == 80
+		);
 	}
 
 	function testAccuracy() public {
@@ -28,6 +31,7 @@ contract RandomnessTest is Test {
 			results: getBasicResults()
 		});
 
+		vm.roll(64);
 		RandomnessMock random = new RandomnessMock(probabilities);
 		uint16[] memory values = new uint16[](4);
 
