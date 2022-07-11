@@ -9,6 +9,7 @@ import { Authority } from 'solmate/auth/Auth.sol';
 import { Characters } from 'src/Characters.sol';
 import { Chests } from 'src/Chests.sol';
 import { EvolvingStones } from 'src/EvolvingStones.sol';
+import { Furnace } from 'src/Furnace.sol';
 import { Olymp } from 'src/Olymp.sol';
 import { Powder } from 'src/Powder.sol';
 import { Training } from 'src/Training.sol';
@@ -58,6 +59,14 @@ library AuthorityLib {
 			uint8(Roles.EvolvingStonesMinter),
 			address(evolvingStones),
 			MintableERC20.mint.selector,
+			true
+		);
+	}
+
+	function setupFurnace(RolesAuthority authority, Furnace furnace) public {
+		authority.setUserRole(
+			address(furnace),
+			uint8(Roles.EvolvingStonesMinter),
 			true
 		);
 	}
