@@ -24,7 +24,7 @@ import { CharactersData } from './data/CharactersData.sol';
 import { ChestsData } from './data/ChestsData.sol';
 
 contract ChestsTest is Test {
-	ERC20 currency;
+	CurrencyMock currency;
 	Characters characters;
 	Chests chests;
 
@@ -60,5 +60,20 @@ contract ChestsTest is Test {
 			ChestsData.getChests(),
 			ChestsData.getConfigs()
 		);
+	}
+
+	function testCanBuyChest() public {
+		// Mint and approve currency
+		currency.mint(address(this), 580e18);
+		currency.approve(address(chests), 580e18);
+
+		// Mint one of each chest
+		chests.mint(0, 1);
+		chests.mint(1, 1);
+		chests.mint(2, 1);
+		chests.mint(3, 1);
+
+		// Check that all the currency was used
+		assertEq(currency.balanceOf(address(this)), 0);
 	}
 }

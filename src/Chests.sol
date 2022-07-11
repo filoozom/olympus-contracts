@@ -88,7 +88,7 @@ contract Chests is ERC1155, Randomness {
 	function setChests(Chest[] memory _chests) private {
 		uint256 length = _chests.length;
 		for (uint256 i = 0; i < length; ) {
-			chests[i] = _chests[i];
+			chests.push(_chests[i]);
 			unchecked {
 				++i;
 			}
