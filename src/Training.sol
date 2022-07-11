@@ -6,9 +6,15 @@ import { Characters } from './Characters.sol';
 import { MintableERC20 } from './lib/MintableERC20.sol';
 import { Randomness, Probabilities } from './lib/Randomness.sol';
 
+enum Durations {
+	OneDay,
+	ThreeDays,
+	SevenDays
+}
+
 struct Session {
 	uint256 end;
-	uint8 time;
+	Durations time;
 }
 
 contract Training is Randomness {
@@ -21,10 +27,12 @@ contract Training is Randomness {
 
 	constructor(
 		Characters _characters,
+		MintableERC20 _powder,
 		uint32[] memory _durations,
 		Probabilities[] memory _probabilities
 	) {
 		characters = _characters;
+		powder = _powder;
 		durations = _durations;
 		setProbabilities(_probabilities);
 	}
@@ -39,9 +47,8 @@ contract Training is Randomness {
 		}
 	}
 
-	function train(uint256 id, uint8 time) public {
-		uint256 duration = durations[time];
-		require(duration > 0, 'WRONG_DURATION');
+	function train(uint256 id, Durations time) public {
+		uint256 duration = durations[uint8(time)];
 		require(sessions[id].end == 0, 'ALREADY_TRAINING');
 		require(characters.ownerOf(id) == msg.sender, 'UNAUTHORIZED');
 
@@ -50,11 +57,11 @@ contract Training is Randomness {
 
 	function endTrain(uint256 id) public {
 		Session storage training = sessions[id];
-		require(training.end > block.timestamp, 'NOT_DONE');
+		require(block.timestamp >= training.end, 'NOT_DONE');
 		require(characters.ownerOf(id) == msg.sender, 'UNAUTHORIZED');
 
 		training.end = 0;
 
-		powder.mint(msg.sender, getRandomUint(probabilities[training.time]));
+		powder.mint(msg.sender, getRandomUint(probabilities[uint8(training.time)]));
 	}
 }
