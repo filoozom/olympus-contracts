@@ -20,6 +20,7 @@ import { Powder } from 'src/Powder.sol';
 import { CurrencyMock } from './mocks/CurrencyMock.sol';
 
 // Data
+import { CharactersData } from './data/CharactersData.sol';
 import { ChestsData } from './data/ChestsData.sol';
 
 contract ChestsTest is Test {
@@ -35,17 +36,17 @@ contract ChestsTest is Test {
 
 	function setUp() public {
 		// Tokens
-		olymp = new Olymp('bOlymp', 'bOlymp', msg.sender, authority);
-		powder = new Powder('Powder', 'POW', msg.sender, authority);
-		stones = new Stones('Evolving Stones', 'EST', msg.sender, authority);
+		olymp = new Olymp('bOlymp', 'bOlymp', address(this), authority);
+		powder = new Powder('Powder', 'POW', address(this), authority);
+		stones = new Stones('Evolving Stones', 'EST', address(this), authority);
 
 		// Dependencies
 		currency = new CurrencyMock('USD', 'BUSD');
 		characters = new Characters(
-			'Name',
-			'Symbol',
-			BurnableERC20(stones),
-			new uint8[](0)
+			'Characters',
+			'CHAR',
+			BurnableERC20(address(stones)),
+			CharactersData.getLevelCosts()
 		);
 
 		// Chests
