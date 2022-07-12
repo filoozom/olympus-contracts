@@ -35,6 +35,11 @@ contract ChestsTest is Test {
 	Authority authority = Authority(address(0));
 	address recipient = address(99);
 
+	function getChest(uint256 id) private view returns (Chest memory chest) {
+		(uint16 minted, uint16 max, uint224 price) = chests.chests(id);
+		chest = Chest(minted, max, price);
+	}
+
 	function setUp() public {
 		// Tokens
 		olymp = new Olymp('bOlymp', 'bOlymp', address(this), authority);
@@ -61,6 +66,14 @@ contract ChestsTest is Test {
 			ChestsData.getChests(),
 			ChestsData.getConfigs()
 		);
+
+		// Set roles
+		olymp.setOwner(address(chests));
+		powder.setOwner(address(chests));
+		stones.setOwner(address(chests));
+
+		// We need at least 64 mined blocks for randomness
+		vm.roll(64);
 	}
 
 	function testCanBuyChest() public {
@@ -128,8 +141,54 @@ contract ChestsTest is Test {
 		assertEq(getChest(0).minted, 1000);
 	}
 
-	function getChest(uint256 id) private view returns (Chest memory chest) {
-		(uint16 minted, uint16 max, uint224 price) = chests.chests(id);
-		chest = Chest(minted, max, price);
+	function testCanOpenChest() public {
+		address user = address(1);
+
+		// Mint four chests
+		currency.mint(user, 1e64);
+		vm.startPrank(user);
+		currency.approve(address(chests), 1e64);
+		chests.mint(3, 4);
+
+		// Open one chest
+		chests.open(3);
+
+		// Reused variables
+		uint256 balance;
+
+		// Check olymp balance
+		balance = olymp.balanceOf(user);
+		assertTrue(balance == 1600 || balance == 3200 || balance == 6400);
+
+		// Check powder balance
+		balance = powder.balanceOf(user);
+		assertTrue(balance == 80 || balance == 160 || balance == 400);
+
+		// Make sure only one character was minted
+		assertEq(characters.ownerOf(0), user);
+		vm.expectRevert('NOT_MINTED');
+		characters.ownerOf(1);
+	}
+
+	function testCanOpenAllChests() public {
+		address user = address(1);
+
+		// Mint four chests
+		currency.mint(user, 1e64);
+		vm.startPrank(user);
+		currency.approve(address(chests), 1e64);
+
+		// Mint 5 of each chest
+		chests.mint(0, 5);
+		chests.mint(1, 5);
+		chests.mint(2, 5);
+		chests.mint(3, 5);
+
+		// Open all chests
+		for (uint8 chest = 0; chest < 4; chest++) {
+			for (uint8 i = 0; i < 5; i++) {
+				chests.open(chest);
+			}
+		}
 	}
 }

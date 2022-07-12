@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
+import 'forge-std/console.sol';
 
 // Solmate
 import { ERC20 } from 'solmate/tokens/ERC20.sol';
@@ -116,9 +117,9 @@ contract Chests is ERC1155, Randomness {
 		chest.minted += amount;
 	}
 
-	function open(uint256 id, uint32 amount) public {
+	function open(uint256 id) public {
 		// Burn the chest
-		_burn(msg.sender, id, amount);
+		_burn(msg.sender, id, 1);
 
 		// Get large random number
 		uint16 result;

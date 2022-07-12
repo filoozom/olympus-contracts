@@ -130,7 +130,7 @@ library ChestsData {
 	{
 		return
 			ProbabilitiesLib.createConfig(
-				0,
+				1,
 				Settings.EvolvingStone,
 				ToDynamicLib.toDynamic([85, 15]),
 				ToDynamicLib.toDynamic([uint16(0), 1])
@@ -144,7 +144,7 @@ library ChestsData {
 	{
 		return
 			ProbabilitiesLib.createConfig(
-				0,
+				1,
 				Settings.Powder,
 				ToDynamicLib.toDynamic([5, 4, 1]),
 				ToDynamicLib.toDynamic([uint16(20), 40, 100])
@@ -158,7 +158,7 @@ library ChestsData {
 	{
 		return
 			ProbabilitiesLib.createConfig(
-				0,
+				1,
 				Settings.Olymp,
 				ToDynamicLib.toDynamic([60, 20, 16, 4]),
 				ToDynamicLib.toDynamic([uint16(0), 400, 800, 1600])
@@ -172,7 +172,7 @@ library ChestsData {
 	{
 		return
 			ProbabilitiesLib.createConfig(
-				0,
+				1,
 				Settings.CharacterRarity,
 				ToDynamicLib.toDynamic([8, 2]),
 				ToDynamicLib.toDynamic([uint16(0), 1])
@@ -186,7 +186,7 @@ library ChestsData {
 	{
 		return
 			ProbabilitiesLib.createConfig(
-				0,
+				1,
 				Settings.Character,
 				ToDynamicLib.toDynamic([35, 30, 25, 10]),
 				ToDynamicLib.toDynamic([uint16(0), 1, 2, 3])
@@ -201,7 +201,7 @@ library ChestsData {
 	{
 		return
 			ProbabilitiesLib.createConfig(
-				0,
+				2,
 				Settings.EvolvingStone,
 				ToDynamicLib.toDynamic([4, 1]),
 				ToDynamicLib.toDynamic([uint16(0), 1])
@@ -215,7 +215,7 @@ library ChestsData {
 	{
 		return
 			ProbabilitiesLib.createConfig(
-				0,
+				2,
 				Settings.Powder,
 				ToDynamicLib.toDynamic([5, 4, 1]),
 				ToDynamicLib.toDynamic([uint16(40), 80, 200])
@@ -225,7 +225,7 @@ library ChestsData {
 	function getRareChestOlympConfig() public pure returns (ChestConfigs memory) {
 		return
 			ProbabilitiesLib.createConfig(
-				0,
+				2,
 				Settings.Olymp,
 				ToDynamicLib.toDynamic([50, 25, 20, 5]),
 				ToDynamicLib.toDynamic([uint16(0), 800, 1600, 3200])
@@ -239,7 +239,7 @@ library ChestsData {
 	{
 		return
 			ProbabilitiesLib.createConfig(
-				0,
+				2,
 				Settings.CharacterRarity,
 				ToDynamicLib.toDynamic([1, 1]),
 				ToDynamicLib.toDynamic([uint16(0), 1])
@@ -253,7 +253,7 @@ library ChestsData {
 	{
 		return
 			ProbabilitiesLib.createConfig(
-				0,
+				2,
 				Settings.Character,
 				ToDynamicLib.toDynamic([35, 30, 25, 10]),
 				ToDynamicLib.toDynamic([uint16(1), 2, 3, 4])
@@ -268,7 +268,7 @@ library ChestsData {
 	{
 		return
 			ProbabilitiesLib.createConfig(
-				0,
+				3,
 				Settings.EvolvingStone,
 				ToDynamicLib.toDynamic([3, 1]),
 				ToDynamicLib.toDynamic([uint16(0), 1])
@@ -282,7 +282,7 @@ library ChestsData {
 	{
 		return
 			ProbabilitiesLib.createConfig(
-				0,
+				3,
 				Settings.Powder,
 				ToDynamicLib.toDynamic([5, 4, 1]),
 				ToDynamicLib.toDynamic([uint16(160), 80, 400])
@@ -296,7 +296,7 @@ library ChestsData {
 	{
 		return
 			ProbabilitiesLib.createConfig(
-				0,
+				3,
 				Settings.Olymp,
 				ToDynamicLib.toDynamic([40, 30, 24, 6]),
 				ToDynamicLib.toDynamic([uint16(0), 1600, 3200, 6400])
@@ -310,7 +310,7 @@ library ChestsData {
 	{
 		return
 			ProbabilitiesLib.createConfig(
-				0,
+				3,
 				Settings.CharacterRarity,
 				ToDynamicLib.toDynamic([3, 1, 1]),
 				ToDynamicLib.toDynamic([uint16(1), 0, 2])
@@ -324,7 +324,7 @@ library ChestsData {
 	{
 		return
 			ProbabilitiesLib.createConfig(
-				0,
+				3,
 				Settings.Character,
 				ToDynamicLib.toDynamic([35, 30, 25, 10]),
 				ToDynamicLib.toDynamic([uint16(2), 3, 4, 5])
