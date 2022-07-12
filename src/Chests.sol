@@ -21,9 +21,9 @@ enum Settings {
 }
 
 struct Chest {
-	uint256 minted;
-	uint256 max;
-	uint256 price;
+	uint16 minted;
+	uint16 max;
+	uint224 price;
 }
 
 struct ChestConfigs {
@@ -36,18 +36,18 @@ contract Chests is ERC1155, Randomness {
 	event ChestOpened(address indexed owner, uint256 indexed id);
 
 	// Chest config
-	Chest[] chests;
-	mapping(uint256 => mapping(Settings => Probabilities)) probabilities;
+	Chest[] public chests;
+	mapping(uint256 => mapping(Settings => Probabilities)) public probabilities;
 
 	// Minting configuration
-	ERC20 currency;
-	address beneficiary;
+	ERC20 public currency;
+	address public beneficiary;
 
 	// Resources to mint on chest opening
-	Characters characters;
-	MintableERC20 olymp;
-	MintableERC20 powder;
-	MintableERC20 stones;
+	Characters public characters;
+	MintableERC20 public olymp;
+	MintableERC20 public powder;
+	MintableERC20 public stones;
 
 	constructor(
 		ERC20 _currency,
@@ -99,10 +99,11 @@ contract Chests is ERC1155, Randomness {
 		return '';
 	}
 
-	function mint(uint256 id, uint256 amount) public {
+	function mint(uint256 id, uint16 amount) public {
 		Chest storage chest = chests[id];
 		unchecked {
-			require(chest.max - chest.minted <= amount, 'NOT_ENOUGH_LEFT');
+			// max - minted can never be < 0
+			require(chest.max - chest.minted >= amount, 'NOT_ENOUGH_LEFT');
 		}
 
 		uint256 price;
@@ -112,6 +113,7 @@ contract Chests is ERC1155, Randomness {
 
 		SafeTransferLib.safeTransferFrom(currency, msg.sender, beneficiary, price);
 		_mint(msg.sender, id, amount, '');
+		chest.minted += amount;
 	}
 
 	function open(uint256 id, uint32 amount) public {
