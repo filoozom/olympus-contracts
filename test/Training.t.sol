@@ -36,6 +36,9 @@ contract TrainingTest is Test {
 			TrainingData.getDurations(),
 			TrainingData.getProbabilities()
 		);
+
+		// We need at least 64 mined blocks for randomness
+		vm.roll(64);
 	}
 
 	function testCanTrain() public {
@@ -89,9 +92,8 @@ contract TrainingTest is Test {
 		// Give the training contract rights to mint powder
 		powder.setOwner(address(training));
 
-		// Wrap to one day later and increase block number for randomness
+		// Warp to one day later
 		vm.warp(block.timestamp + 86400);
-		vm.roll(64);
 		training.endTrain(0);
 	}
 
@@ -122,9 +124,8 @@ contract TrainingTest is Test {
 		// Give the training contract rights to mint powder
 		powder.setOwner(address(training));
 
-		// Wrap to one day later and increase block number for randomness
+		// Warp to one day later
 		vm.warp(block.timestamp + 86400);
-		vm.roll(64);
 		training.endTrain(0);
 
 		// Try to train again (check if state was reset)
@@ -137,9 +138,8 @@ contract TrainingTest is Test {
 		// Give the training contract rights to mint powder
 		powder.setOwner(address(training));
 
-		// Wrap to one day later and increase block number for randomness
+		// Warp to one day later
 		vm.warp(block.timestamp + 86400);
-		vm.roll(64);
 		vm.expectRevert('NOT_TRAINING');
 		training.endTrain(0);
 	}
