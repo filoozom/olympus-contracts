@@ -103,7 +103,7 @@ library ChestsData {
 			ProbabilitiesLib.createConfig(
 				0,
 				Settings.CharacterRarity,
-				ToDynamicLib.toDynamic([6, 4]),
+				ToDynamicLib.toDynamic([1, 1]),
 				ToDynamicLib.toDynamic([type(uint16).max, 0])
 			);
 	}
