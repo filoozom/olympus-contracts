@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
-import 'forge-std/console.sol';
 
 // Solmate
 import { ERC20 } from 'solmate/tokens/ERC20.sol';
