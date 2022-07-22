@@ -17,14 +17,14 @@ import { Olymp } from 'src/Olymp.sol';
 import { Powder } from 'src/Powder.sol';
 
 // Mocks
-import { CurrencyMock } from './mocks/CurrencyMock.sol';
+import { ERC20Mock } from './mocks/ERC20Mock.sol';
 
 // Data
 import { CharactersData } from './data/CharactersData.sol';
 import { ChestsData } from './data/ChestsData.sol';
 
 contract ChestsTest is Test {
-	CurrencyMock currency;
+	ERC20Mock currency;
 	Characters characters;
 	Chests chests;
 
@@ -47,7 +47,7 @@ contract ChestsTest is Test {
 		stones = new Stones('Evolving Stones', 'EST', address(this), authority);
 
 		// Dependencies
-		currency = new CurrencyMock('USD', 'BUSD');
+		currency = new ERC20Mock('USD', 'BUSD');
 		characters = new Characters(
 			'Characters',
 			'CHAR',

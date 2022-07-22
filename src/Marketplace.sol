@@ -8,9 +8,6 @@ import { ERC721 } from 'solmate/tokens/ERC721.sol';
 import { ERC1155 } from 'solmate/tokens/ERC1155.sol';
 import { SafeTransferLib } from 'solmate/utils/SafeTransferLib.sol';
 
-// Custom
-import { IERC165 } from './interfaces/IERC165.sol';
-
 struct Listing {
 	address owner;
 	address token;
@@ -32,7 +29,13 @@ contract Marketplace is Auth {
 	mapping(uint256 => Listing) public listings;
 	uint256 private listingCount = 0;
 
-	constructor(address _owner, Authority _authority) Auth(_owner, _authority) {}
+	constructor(
+		ERC20 _currency,
+		address _owner,
+		Authority _authority
+	) Auth(_owner, _authority) {
+		currency = _currency;
+	}
 
 	// Marketplace
 	function listERC20(
@@ -77,10 +80,10 @@ contract Marketplace is Auth {
 	function cancelERC20(uint256 id) public {
 		Listing storage listing = listings[id];
 		require(listing.owner == msg.sender, 'UNAUTHORIZED');
+		require(allowedTokens[listing.token] == Types.ERC20, 'WRONG_TOKEN');
 
-		SafeTransferLib.safeTransferFrom(
+		SafeTransferLib.safeTransfer(
 			ERC20(listing.token),
-			address(this),
 			msg.sender,
 			listing.amount
 		);
@@ -91,6 +94,7 @@ contract Marketplace is Auth {
 	function cancelERC721(uint256 id) public {
 		Listing storage listing = listings[id];
 		require(listing.owner == msg.sender, 'UNAUTHORIZED');
+		require(allowedTokens[listing.token] == Types.ERC721, 'WRONG_TOKEN');
 
 		ERC721(listing.token).safeTransferFrom(
 			address(this),
@@ -104,6 +108,7 @@ contract Marketplace is Auth {
 	function cancelERC1155(uint256 id) public {
 		Listing storage listing = listings[id];
 		require(listing.owner == msg.sender, 'UNAUTHORIZED');
+		require(allowedTokens[listing.token] == Types.ERC1155, 'WRONG_TOKEN');
 
 		ERC1155(listing.token).safeTransferFrom(
 			address(this),
@@ -118,6 +123,7 @@ contract Marketplace is Auth {
 
 	function buyERC20(uint256 id) public {
 		Listing storage listing = listings[id];
+		require(allowedTokens[listing.token] == Types.ERC20, 'WRONG_TOKEN');
 
 		SafeTransferLib.safeTransferFrom(
 			currency,
@@ -125,9 +131,8 @@ contract Marketplace is Auth {
 			listing.owner,
 			listing.price
 		);
-		SafeTransferLib.safeTransferFrom(
+		SafeTransferLib.safeTransfer(
 			ERC20(listing.token),
-			address(this),
 			msg.sender,
 			listing.amount
 		);
@@ -137,6 +142,7 @@ contract Marketplace is Auth {
 
 	function buyERC721(uint256 id) public {
 		Listing storage listing = listings[id];
+		require(allowedTokens[listing.token] == Types.ERC721, 'WRONG_TOKEN');
 
 		SafeTransferLib.safeTransferFrom(
 			currency,
@@ -155,6 +161,7 @@ contract Marketplace is Auth {
 
 	function buyERC1155(uint256 id) public {
 		Listing storage listing = listings[id];
+		require(allowedTokens[listing.token] == Types.ERC1155, 'WRONG_TOKEN');
 
 		SafeTransferLib.safeTransferFrom(
 			currency,
@@ -174,27 +181,15 @@ contract Marketplace is Auth {
 	}
 
 	// Admin
-	function allowToken(address token) public requiresAuth {
-		allowedTokens[token] = getType(IERC165(token));
+	function allowToken(address token, Types nftType) public requiresAuth {
+		allowedTokens[token] = nftType;
 	}
 
-	function disallowToken(address token) public requiresAuth {
-		allowedTokens[token] = Types.Unsupported;
+	function setCurrency(ERC20 _currency) public requiresAuth {
+		currency = _currency;
 	}
 
 	// Private
-	function getType(IERC165 token) private view returns (Types) {
-		if (token.supportsInterface(0x80ac58cd)) {
-			return Types.ERC721;
-		}
-
-		if (token.supportsInterface(0xd9b67a26)) {
-			return Types.ERC1155;
-		}
-
-		revert('INCOMPATIBLE_CONTRACT');
-	}
-
 	function createListing(
 		address token,
 		uint256 id,
