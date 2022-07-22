@@ -154,6 +154,85 @@ contract MarketplaceTest is Test {
 		assertEq(erc20.balanceOf(buyer), 5);
 	}
 
+	// ERC721
+	function testERC721CanList() public {
+		marketplace.allowToken(address(erc721), Types.ERC721);
+
+		vm.startPrank(seller);
+		erc721.approve(address(marketplace), 0);
+		marketplace.listERC721(address(erc721), 0, 50);
+	}
+
+	function testERC721CannotListERC721() public {
+		// TODO
+	}
+
+	function testERC721CannotListERC1155() public {
+		// TODO
+	}
+
+	function testERC721CannotListUnallowedToken() public {
+		vm.startPrank(seller);
+		erc721.approve(address(marketplace), 0);
+
+		vm.expectRevert('UNSUPPORTED_TOKEN');
+		marketplace.listERC721(address(erc721), 0, 5);
+	}
+
+	function testERC721CannotListUnapprovedToken() public {
+		marketplace.allowToken(address(erc721), Types.ERC721);
+
+		vm.startPrank(seller);
+		vm.expectRevert('NOT_AUTHORIZED');
+		marketplace.listERC721(address(erc721), 0, 5);
+	}
+
+	function testERC721CanCancel() public {
+		marketplace.allowToken(address(erc721), Types.ERC721);
+
+		vm.startPrank(seller);
+		erc721.approve(address(marketplace), 0);
+		marketplace.listERC721(address(erc721), 0, 5);
+
+		// Wrong cancels
+		vm.expectRevert('WRONG_TOKEN');
+		marketplace.cancelERC20(0);
+		vm.expectRevert('WRONG_TOKEN');
+		marketplace.cancelERC1155(0);
+
+		// Right cancel
+		marketplace.cancelERC721(0);
+
+		// Make sure the seller got their NFTs back
+		assertEq(erc721.ownerOf(0), seller);
+	}
+
+	function testERC721CannotCancelUnlisted() public {
+		vm.expectRevert('UNAUTHORIZED');
+		marketplace.cancelERC721(0);
+	}
+
+	function testERC721CanBuy() public {
+		marketplace.allowToken(address(erc721), Types.ERC721);
+
+		// List the token
+		vm.startPrank(seller);
+		erc721.approve(address(marketplace), 0);
+		marketplace.listERC721(address(erc721), 0, 75);
+		vm.stopPrank();
+
+		// Buy the tokens
+		vm.startPrank(buyer);
+		currency.approve(address(marketplace), 75);
+		marketplace.buyERC721(0);
+		vm.stopPrank();
+
+		// Check balances
+		assertEq(currency.balanceOf(buyer), 925);
+		assertEq(currency.balanceOf(seller), 75);
+		assertEq(erc721.ownerOf(0), buyer);
+	}
+
 	// Utils
 	function assertEq(Types a, Types b) private {
 		assertEq(uint8(a), uint8(b));

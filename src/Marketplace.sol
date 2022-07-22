@@ -4,8 +4,8 @@ pragma solidity ^0.8.13;
 // Solmate
 import { Auth, Authority } from 'solmate/auth/Auth.sol';
 import { ERC20 } from 'solmate/tokens/ERC20.sol';
-import { ERC721 } from 'solmate/tokens/ERC721.sol';
-import { ERC1155 } from 'solmate/tokens/ERC1155.sol';
+import { ERC721, ERC721TokenReceiver } from 'solmate/tokens/ERC721.sol';
+import { ERC1155, ERC1155TokenReceiver } from 'solmate/tokens/ERC1155.sol';
 import { SafeTransferLib } from 'solmate/utils/SafeTransferLib.sol';
 
 struct Listing {
@@ -23,7 +23,7 @@ enum Types {
 	ERC1155
 }
 
-contract Marketplace is Auth {
+contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
 	ERC20 public currency;
 	mapping(address => Types) public allowedTokens;
 	mapping(uint256 => Listing) public listings;
