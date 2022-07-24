@@ -233,6 +233,86 @@ contract MarketplaceTest is Test {
 		assertEq(erc721.ownerOf(0), buyer);
 	}
 
+	// ERC1155
+	function testERC1155CanList() public {
+		marketplace.allowToken(address(erc1155), Types.ERC1155);
+
+		vm.startPrank(seller);
+		erc1155.setApprovalForAll(address(marketplace), true);
+		marketplace.listERC1155(address(erc1155), 0, 5, 50);
+	}
+
+	function testERC1155CannotListERC20() public {
+		// TODO
+	}
+
+	function testERC1155CannotListERC721() public {
+		// TODO
+	}
+
+	function testERC1155CannotListUnallowedToken() public {
+		vm.startPrank(seller);
+		erc1155.setApprovalForAll(address(marketplace), true);
+
+		vm.expectRevert('UNSUPPORTED_TOKEN');
+		marketplace.listERC1155(address(erc1155), 0, 5, 5);
+	}
+
+	function testERC1155CannotListUnapprovedToken() public {
+		marketplace.allowToken(address(erc1155), Types.ERC1155);
+
+		vm.startPrank(seller);
+		vm.expectRevert('NOT_AUTHORIZED');
+		marketplace.listERC1155(address(erc1155), 0, 5, 5);
+	}
+
+	function testERC1155CanCancel() public {
+		marketplace.allowToken(address(erc1155), Types.ERC1155);
+
+		vm.startPrank(seller);
+		erc1155.setApprovalForAll(address(marketplace), true);
+		marketplace.listERC1155(address(erc1155), 0, 5, 5);
+
+		// Wrong cancels
+		vm.expectRevert('WRONG_TOKEN');
+		marketplace.cancelERC20(0);
+		vm.expectRevert('WRONG_TOKEN');
+		marketplace.cancelERC721(0);
+
+		// Right cancel
+		marketplace.cancelERC1155(0);
+
+		// Make sure the seller got their NFTs back
+		assertEq(erc1155.balanceOf(seller, 0), 10);
+	}
+
+	function testERC1155CannotCancelUnlisted() public {
+		vm.expectRevert('UNAUTHORIZED');
+		marketplace.cancelERC1155(0);
+	}
+
+	function testERC1155CanBuy() public {
+		marketplace.allowToken(address(erc1155), Types.ERC1155);
+
+		// List the token
+		vm.startPrank(seller);
+		erc1155.setApprovalForAll(address(marketplace), true);
+		marketplace.listERC1155(address(erc1155), 0, 6, 75);
+		vm.stopPrank();
+
+		// Buy the tokens
+		vm.startPrank(buyer);
+		currency.approve(address(marketplace), 75);
+		marketplace.buyERC1155(0);
+		vm.stopPrank();
+
+		// Check balances
+		assertEq(currency.balanceOf(buyer), 925);
+		assertEq(currency.balanceOf(seller), 75);
+		assertEq(erc1155.balanceOf(buyer, 0), 6);
+		assertEq(erc1155.balanceOf(seller, 0), 4);
+	}
+
 	// Utils
 	function assertEq(Types a, Types b) private {
 		assertEq(uint8(a), uint8(b));
