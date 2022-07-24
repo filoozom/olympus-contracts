@@ -84,11 +84,21 @@ contract MarketplaceTest is Test {
 	}
 
 	function testERC20CannotListERC721() public {
-		// TODO
+		marketplace.allowToken(address(erc721), Types.ERC721);
+
+		vm.startPrank(seller);
+		erc721.approve(address(marketplace), 0);
+		vm.expectRevert('UNSUPPORTED_TOKEN');
+		marketplace.listERC20(address(erc721), 0, 50);
 	}
 
 	function testERC20CannotListERC1155() public {
-		// TODO
+		marketplace.allowToken(address(erc1155), Types.ERC1155);
+
+		vm.startPrank(seller);
+		erc1155.setApprovalForAll(address(marketplace), true);
+		vm.expectRevert('UNSUPPORTED_TOKEN');
+		marketplace.listERC20(address(erc1155), 5, 50);
 	}
 
 	function testERC20CannotListUnallowedToken() public {
@@ -163,12 +173,22 @@ contract MarketplaceTest is Test {
 		marketplace.listERC721(address(erc721), 0, 50);
 	}
 
-	function testERC721CannotListERC721() public {
-		// TODO
+	function testERC721CannotListERC20() public {
+		marketplace.allowToken(address(erc20), Types.ERC20);
+
+		vm.startPrank(seller);
+		erc20.approve(address(marketplace), 50);
+		vm.expectRevert('UNSUPPORTED_TOKEN');
+		marketplace.listERC721(address(erc20), 50, 500);
 	}
 
 	function testERC721CannotListERC1155() public {
-		// TODO
+		marketplace.allowToken(address(erc1155), Types.ERC1155);
+
+		vm.startPrank(seller);
+		erc1155.setApprovalForAll(address(marketplace), true);
+		vm.expectRevert('UNSUPPORTED_TOKEN');
+		marketplace.listERC721(address(erc1155), 0, 50);
 	}
 
 	function testERC721CannotListUnallowedToken() public {
@@ -243,11 +263,21 @@ contract MarketplaceTest is Test {
 	}
 
 	function testERC1155CannotListERC20() public {
-		// TODO
+		marketplace.allowToken(address(erc20), Types.ERC20);
+
+		vm.startPrank(seller);
+		erc20.approve(address(marketplace), 50);
+		vm.expectRevert('UNSUPPORTED_TOKEN');
+		marketplace.listERC1155(address(erc20), 0, 50, 500);
 	}
 
 	function testERC1155CannotListERC721() public {
-		// TODO
+		marketplace.allowToken(address(erc721), Types.ERC721);
+
+		vm.startPrank(seller);
+		erc721.approve(address(marketplace), 0);
+		vm.expectRevert('UNSUPPORTED_TOKEN');
+		marketplace.listERC1155(address(erc721), 0, 5, 50);
 	}
 
 	function testERC1155CannotListUnallowedToken() public {
