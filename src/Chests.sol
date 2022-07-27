@@ -9,7 +9,7 @@ import { SafeTransferLib } from 'solmate/utils/SafeTransferLib.sol';
 
 // Custom
 import { Randomness, Probabilities } from './lib/Randomness.sol';
-import { MintableERC20 } from './lib/MintableERC20.sol';
+import { MintableBEP20 } from './lib/MintableBEP20.sol';
 import { Characters, Rarities } from './Characters.sol';
 
 enum Settings {
@@ -45,17 +45,17 @@ contract Chests is ERC1155, Randomness {
 
 	// Resources to mint on chest opening
 	Characters public characters;
-	MintableERC20 public olymp;
-	MintableERC20 public powder;
-	MintableERC20 public stones;
+	MintableBEP20 public olymp;
+	MintableBEP20 public powder;
+	MintableBEP20 public stones;
 
 	constructor(
 		ERC20 _currency,
 		address _beneficiary,
 		Characters _characters,
-		MintableERC20 _olymp,
-		MintableERC20 _powder,
-		MintableERC20 _stones,
+		MintableBEP20 _olymp,
+		MintableBEP20 _powder,
+		MintableBEP20 _stones,
 		Chest[] memory _chests,
 		ChestConfigs[] memory _configs
 	) {

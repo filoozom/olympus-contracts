@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 // Custom
 import { Characters } from './Characters.sol';
-import { MintableERC20 } from './lib/MintableERC20.sol';
+import { MintableBEP20 } from './lib/MintableBEP20.sol';
 import { Randomness, Probabilities } from './lib/Randomness.sol';
 
 enum Durations {
@@ -20,14 +20,14 @@ struct Session {
 contract Training is Randomness {
 	Characters public characters;
 	mapping(uint256 => Session) public sessions;
-	MintableERC20 public powder;
+	MintableBEP20 public powder;
 
 	Probabilities[] public probabilities;
 	uint32[] public durations;
 
 	constructor(
 		Characters _characters,
-		MintableERC20 _powder,
+		MintableBEP20 _powder,
 		uint32[] memory _durations,
 		Probabilities[] memory _probabilities
 	) {

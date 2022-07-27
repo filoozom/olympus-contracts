@@ -2,8 +2,8 @@
 pragma solidity ^0.8.13;
 
 // Custom
-import { BurnableERC20 } from './lib/BurnableERC20.sol';
-import { MintableERC20 } from './lib/MintableERC20.sol';
+import { BurnableBEP20 } from './lib/BurnableBEP20.sol';
+import { MintableBEP20 } from './lib/MintableBEP20.sol';
 
 struct Pending {
 	uint64 end;
@@ -11,8 +11,8 @@ struct Pending {
 }
 
 contract Furnace {
-	BurnableERC20 public powder;
-	MintableERC20 public stones;
+	BurnableBEP20 public powder;
+	MintableBEP20 public stones;
 
 	uint16 public immutable cost;
 	uint32 public immutable duration;
@@ -20,8 +20,8 @@ contract Furnace {
 	mapping(address => Pending) pendings;
 
 	constructor(
-		BurnableERC20 _powder,
-		MintableERC20 _stones,
+		BurnableBEP20 _powder,
+		MintableBEP20 _stones,
 		uint16 _cost,
 		uint32 _duration
 	) {

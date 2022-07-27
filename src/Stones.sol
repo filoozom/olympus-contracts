@@ -6,14 +6,14 @@ import { ERC20 } from 'solmate/tokens/ERC20.sol';
 import { Authority } from 'solmate/auth/Auth.sol';
 
 // Custom
-import { BurnableERC20 } from './lib/BurnableERC20.sol';
-import { MintableERC20 } from './lib/MintableERC20.sol';
+import { BurnableBEP20 } from './lib/BurnableBEP20.sol';
+import { MintableBEP20 } from './lib/MintableBEP20.sol';
 
-contract Stones is BurnableERC20, MintableERC20 {
+contract Stones is BurnableBEP20, MintableBEP20 {
 	constructor(
 		string memory _name,
 		string memory _symbol,
 		address _owner,
 		Authority _authority
-	) ERC20(_name, _symbol, 0) MintableERC20(_owner, _authority) {}
+	) ERC20(_name, _symbol, 0) MintableBEP20(_owner, _authority) {}
 }

@@ -6,8 +6,8 @@ import 'forge-std/Test.sol';
 import { Furnace } from 'src/Furnace.sol';
 import { Powder } from 'src/Powder.sol';
 import { Stones } from 'src/Stones.sol';
-import { MintableERC20 } from 'src/lib/MintableERC20.sol';
-import { BurnableERC20 } from 'src/lib/BurnableERC20.sol';
+import { MintableBEP20 } from 'src/lib/MintableBEP20.sol';
+import { BurnableBEP20 } from 'src/lib/BurnableBEP20.sol';
 
 // Data
 import { AuthorityData } from './data/AuthorityData.sol';
@@ -37,8 +37,8 @@ contract FurnaceTest is Test {
 
 		// Furnance
 		furnace = new Furnace(
-			BurnableERC20(powder),
-			MintableERC20(stones),
+			BurnableBEP20(powder),
+			MintableBEP20(stones),
 			100,
 			8 hours
 		);

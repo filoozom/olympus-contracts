@@ -13,7 +13,7 @@ import { Olymp } from 'src/Olymp.sol';
 import { Powder } from 'src/Powder.sol';
 import { Stones } from 'src/Stones.sol';
 import { Training } from 'src/Training.sol';
-import { MintableERC20 } from 'src/lib/MintableERC20.sol';
+import { MintableBEP20 } from 'src/lib/MintableBEP20.sol';
 
 enum Roles {
 	PowderMinter,
@@ -59,7 +59,7 @@ library AuthorityLib {
 		authority.setRoleCapability(
 			uint8(Roles.OlympMinter),
 			address(olymp),
-			MintableERC20.mint.selector,
+			MintableBEP20.mint.selector,
 			true
 		);
 	}
@@ -68,7 +68,7 @@ library AuthorityLib {
 		authority.setRoleCapability(
 			uint8(Roles.PowderMinter),
 			address(powder),
-			MintableERC20.mint.selector,
+			MintableBEP20.mint.selector,
 			true
 		);
 	}
@@ -77,7 +77,7 @@ library AuthorityLib {
 		authority.setRoleCapability(
 			uint8(Roles.StonesMinter),
 			address(stones),
-			MintableERC20.mint.selector,
+			MintableBEP20.mint.selector,
 			true
 		);
 	}

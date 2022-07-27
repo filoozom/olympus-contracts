@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-// Solmate
-import { ERC20 } from 'solmate/tokens/ERC20.sol';
+// Custom
+import { BEP20 } from './BEP20.sol';
 
-abstract contract BurnableERC20 is ERC20 {
+abstract contract BurnableBEP20 is BEP20 {
 	function burnFrom(address from, uint256 amount) public {
 		uint256 allowed = allowance[from][msg.sender];
 

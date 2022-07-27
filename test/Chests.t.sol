@@ -11,8 +11,8 @@ import { Authority } from 'solmate/auth/Auth.sol';
 import { Chests, Chest } from 'src/Chests.sol';
 import { Characters, Rarities } from 'src/Characters.sol';
 import { Stones } from 'src/Stones.sol';
-import { MintableERC20 } from 'src/lib/MintableERC20.sol';
-import { BurnableERC20 } from 'src/lib/BurnableERC20.sol';
+import { MintableBEP20 } from 'src/lib/MintableBEP20.sol';
+import { BurnableBEP20 } from 'src/lib/BurnableBEP20.sol';
 import { Olymp } from 'src/Olymp.sol';
 import { Powder } from 'src/Powder.sol';
 
@@ -51,7 +51,7 @@ contract ChestsTest is Test {
 		characters = new Characters(
 			'Characters',
 			'CHAR',
-			BurnableERC20(address(stones)),
+			BurnableBEP20(address(stones)),
 			CharactersData.getLevelCosts()
 		);
 
@@ -60,9 +60,9 @@ contract ChestsTest is Test {
 			currency,
 			recipient,
 			characters,
-			MintableERC20(olymp),
-			MintableERC20(powder),
-			MintableERC20(stones),
+			MintableBEP20(olymp),
+			MintableBEP20(powder),
+			MintableBEP20(stones),
 			ChestsData.getChests(),
 			ChestsData.getConfigs()
 		);
