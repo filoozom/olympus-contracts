@@ -52,6 +52,8 @@ struct ChainlinkConfig {
 }
 
 contract OpenChests is IOpenChests, ERC721, VRFConsumerBaseV2, Auth {
+	event ChestClaimed(uint256 indexed id, uint256 random);
+
 	// Configs
 	ChainlinkConfig chainlinkConfig;
 	MintConfig public mintConfig;
@@ -107,6 +109,9 @@ contract OpenChests is IOpenChests, ERC721, VRFConsumerBaseV2, Auth {
 	}
 
 	function open(uint256 id, uint256 random) private {
+		// Emit chest claimed
+		emit ChestClaimed(id, random);
+
 		// Metadata
 		address owner = ownerOf(id);
 		uint256 chestId = chests[id];
