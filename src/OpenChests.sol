@@ -70,12 +70,13 @@ contract OpenChests is IOpenChests, ERC721, VRFConsumerBaseV2, Auth {
 		string memory _name,
 		string memory _symbol,
 		address _owner,
+		Authority _authority,
 		ChainlinkConfig memory _chainlinkConfig,
 		MintConfig memory _mintConfig,
 		ChestConfigs[] memory _configs
 	)
 		ERC721(_name, _symbol)
-		Auth(_owner, Authority(address(0)))
+		Auth(_owner, _authority)
 		VRFConsumerBaseV2(address(_chainlinkConfig.coordinator))
 	{
 		chainlinkConfig = _chainlinkConfig;
