@@ -3,34 +3,26 @@ pragma solidity ^0.8.13;
 import 'forge-std/Test.sol';
 
 // Solmate
-import { ERC20 } from 'solmate/tokens/ERC20.sol';
-import { ERC1155 } from 'solmate/tokens/ERC1155.sol';
 import { Authority } from 'solmate/auth/Auth.sol';
 
 // Custom
 import { Chests, Chest } from 'src/Chests.sol';
-import { Characters, Rarities } from 'src/Characters.sol';
-import { Stones } from 'src/Stones.sol';
-import { MintableBEP20 } from 'src/lib/MintableBEP20.sol';
-import { BurnableBEP20 } from 'src/lib/BurnableBEP20.sol';
-import { Olymp } from 'src/Olymp.sol';
-import { Powder } from 'src/Powder.sol';
+import { IOpenChests } from 'src/interfaces/IOpenChests.sol';
 
 // Mocks
 import { ERC20Mock } from './mocks/ERC20Mock.sol';
+import { OpenChestsMock } from './mocks/OpenChestsMock.sol';
 
 // Data
-import { CharactersData } from './data/CharactersData.sol';
 import { ChestsData } from './data/ChestsData.sol';
 
 contract ChestsTest is Test {
-	ERC20Mock currency;
-	Characters characters;
-	Chests chests;
+	event ChestOpened(address indexed owner, uint256 indexed id);
+	event OpenChestsMinted(address indexed to, uint256 indexed chestId);
 
-	Olymp olymp;
-	Powder powder;
-	Stones stones;
+	ERC20Mock currency;
+	IOpenChests openChests;
+	Chests chests;
 
 	Authority authority = Authority(address(0));
 	address recipient = address(99);
@@ -41,39 +33,17 @@ contract ChestsTest is Test {
 	}
 
 	function setUp() public {
-		// Tokens
-		olymp = new Olymp('bOlymp', 'bOlymp', address(this), authority);
-		powder = new Powder('Powder', 'POW', address(this), authority);
-		stones = new Stones('Evolving Stones', 'EST', address(this), authority);
-
 		// Dependencies
 		currency = new ERC20Mock('USD', 'BUSD');
-		characters = new Characters(
-			'Characters',
-			'CHAR',
-			BurnableBEP20(address(stones)),
-			CharactersData.getLevelCosts()
-		);
+		openChests = new OpenChestsMock();
 
 		// Chests
 		chests = new Chests(
 			currency,
 			recipient,
-			characters,
-			MintableBEP20(olymp),
-			MintableBEP20(powder),
-			MintableBEP20(stones),
-			ChestsData.getChests(),
-			ChestsData.getConfigs()
+			openChests,
+			ChestsData.getChests()
 		);
-
-		// Set roles
-		olymp.setOwner(address(chests));
-		powder.setOwner(address(chests));
-		stones.setOwner(address(chests));
-
-		// We need at least 64 mined blocks for randomness
-		vm.roll(64);
 	}
 
 	function testCanBuyChest() public {
@@ -151,23 +121,15 @@ contract ChestsTest is Test {
 		chests.mint(3, 4);
 
 		// Open one chest
+		uint256 snapshot = vm.snapshot();
+		vm.expectEmit(true, true, true, true);
+		emit ChestOpened(user, 3);
 		chests.open(3);
 
-		// Reused variables
-		uint256 balance;
-
-		// Check olymp balance
-		balance = olymp.balanceOf(user);
-		assertTrue(balance == 1600 || balance == 3200 || balance == 6400);
-
-		// Check powder balance
-		balance = powder.balanceOf(user);
-		assertTrue(balance == 80 || balance == 160 || balance == 400);
-
-		// Make sure only one character was minted
-		assertEq(characters.ownerOf(0), user);
-		vm.expectRevert('NOT_MINTED');
-		characters.ownerOf(1);
+		vm.revertTo(snapshot);
+		vm.expectEmit(true, true, true, true);
+		emit OpenChestsMinted(user, 3);
+		chests.open(3);
 	}
 
 	function testCanOpenAllChests() public {
@@ -187,6 +149,14 @@ contract ChestsTest is Test {
 		// Open all chests
 		for (uint8 chest = 0; chest < 4; chest++) {
 			for (uint8 i = 0; i < 5; i++) {
+				uint256 snapshot = vm.snapshot();
+				vm.expectEmit(true, true, true, true);
+				emit ChestOpened(user, chest);
+				chests.open(chest);
+
+				vm.revertTo(snapshot);
+				vm.expectEmit(true, true, true, true);
+				emit OpenChestsMinted(user, chest);
 				chests.open(chest);
 			}
 		}

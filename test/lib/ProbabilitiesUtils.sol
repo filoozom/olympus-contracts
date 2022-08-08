@@ -2,10 +2,10 @@
 pragma solidity ^0.8.13;
 
 // Custom
-import { Probabilities } from 'src/lib/Randomness.sol';
-import { Settings, ChestConfigs } from 'src/Chests.sol';
+import { Probabilities } from 'src/lib/ProbabilitiesLib.sol';
+import { Settings, ChestConfigs } from 'src/OpenChests.sol';
 
-library ProbabilitiesLib {
+library ProbabilitiesUtils {
 	function sum(uint8[] memory array) private pure returns (uint16 result) {
 		uint256 length = array.length;
 		for (uint256 i = 0; i < length; ) {

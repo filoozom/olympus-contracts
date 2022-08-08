@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-library ToDynamicLib {
+library ToDynamicUtils {
 	// uint8
 	function toDynamic(uint8[1] memory array)
 		public

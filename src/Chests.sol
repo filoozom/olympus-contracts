@@ -3,22 +3,11 @@ pragma solidity ^0.8.13;
 
 // Solmate
 import { ERC20 } from 'solmate/tokens/ERC20.sol';
-import { ERC721 } from 'solmate/tokens/ERC721.sol';
 import { ERC1155 } from 'solmate/tokens/ERC1155.sol';
 import { SafeTransferLib } from 'solmate/utils/SafeTransferLib.sol';
 
 // Custom
-import { Randomness, Probabilities } from './lib/Randomness.sol';
-import { MintableBEP20 } from './lib/MintableBEP20.sol';
-import { Characters, Rarities } from './Characters.sol';
-
-enum Settings {
-	EvolvingStone,
-	Powder,
-	Olymp,
-	CharacterRarity,
-	Character
-}
+import { IOpenChests } from './interfaces/IOpenChests.sol';
 
 struct Chest {
 	uint16 minted;
@@ -26,63 +15,30 @@ struct Chest {
 	uint224 price;
 }
 
-struct ChestConfigs {
-	uint8 chest;
-	Settings name;
-	Probabilities probabilities;
-}
-
-contract Chests is ERC1155, Randomness {
+contract Chests is ERC1155 {
 	event ChestOpened(address indexed owner, uint256 indexed id);
 
 	// Chest config
 	Chest[] public chests;
-	mapping(uint256 => mapping(Settings => Probabilities)) public probabilities;
 
 	// Minting configuration
 	ERC20 public currency;
 	address public beneficiary;
-
-	// Resources to mint on chest opening
-	Characters public characters;
-	MintableBEP20 public olymp;
-	MintableBEP20 public powder;
-	MintableBEP20 public stones;
+	IOpenChests public openChests;
 
 	constructor(
 		ERC20 _currency,
 		address _beneficiary,
-		Characters _characters,
-		MintableBEP20 _olymp,
-		MintableBEP20 _powder,
-		MintableBEP20 _stones,
-		Chest[] memory _chests,
-		ChestConfigs[] memory _configs
+		IOpenChests _openChests,
+		Chest[] memory _chests
 	) {
 		// Minting configuration
 		currency = _currency;
 		beneficiary = _beneficiary;
-
-		// Resources to mint on chest opening
-		characters = _characters;
-		olymp = _olymp;
-		powder = _powder;
-		stones = _stones;
+		openChests = _openChests;
 
 		// Chest config
 		setChests(_chests);
-		setConfigs(_configs);
-	}
-
-	function setConfigs(ChestConfigs[] memory _configs) private {
-		uint256 length = _configs.length;
-		for (uint256 i = 0; i < length; ) {
-			ChestConfigs memory config = _configs[i];
-			probabilities[config.chest][config.name] = config.probabilities;
-			unchecked {
-				++i;
-			}
-		}
 	}
 
 	function setChests(Chest[] memory _chests) private {
@@ -119,51 +75,7 @@ contract Chests is ERC1155, Randomness {
 	function open(uint256 id) public {
 		// Burn the chest
 		_burn(msg.sender, id, 1);
-
-		// Get large random number
-		uint16 result;
-		uint256 random = getRandom();
-
-		// Get evolving stones to mint
-		(result, random) = getProbability(id, Settings.EvolvingStone, random);
-		if (result > 0) {
-			stones.mint(msg.sender, result);
-		}
-
-		// Get powder to mint
-		(result, random) = getProbability(id, Settings.Powder, random);
-		if (result > 0) {
-			powder.mint(msg.sender, result);
-		}
-
-		// Get OLYMP to mint
-		(result, random) = getProbability(id, Settings.Olymp, random);
-		if (result > 0) {
-			olymp.mint(msg.sender, result);
-		}
-
-		// Get rarity of the character to mint
-		(result, random) = getProbability(id, Settings.CharacterRarity, random);
-
-		// If the rarity is invalid, it means no character should be minted
-		if (result > uint16(type(Rarities).max)) {
-			return;
-		}
-
-		// Keep rarity to set on the character
-		Rarities rarity = Rarities(result);
-
-		// Mint character
-		(result, random) = getProbability(id, Settings.Character, random);
-		characters.mint(msg.sender, result, rarity);
-	}
-
-	function getProbability(
-		uint256 id,
-		Settings name,
-		uint256 random
-	) internal view returns (uint16, uint256) {
-		Probabilities storage prob = probabilities[id][name];
-		return (getRandomUint(prob, random), random / prob.sum);
+		openChests.mint(msg.sender, id);
+		emit ChestOpened(msg.sender, id);
 	}
 }

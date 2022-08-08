@@ -2,10 +2,10 @@
 pragma solidity ^0.8.13;
 
 // Lib
-import { ToDynamicLib } from '../lib/ToDynamicLib.sol';
+import { ToDynamicUtils } from '../lib/ToDynamicUtils.sol';
 
 library CharactersData {
 	function getLevelCosts() public pure returns (uint8[] memory) {
-		return ToDynamicLib.toDynamic([4, 8, 16, 24, 30]);
+		return ToDynamicUtils.toDynamic([4, 8, 16, 24, 30]);
 	}
 }

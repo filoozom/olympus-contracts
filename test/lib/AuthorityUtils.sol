@@ -27,7 +27,7 @@ struct TrainingConfig {
 	Powder powder;
 }
 
-library AuthorityLib {
+library AuthorityUtils {
 	function deploy(address owner) public returns (RolesAuthority) {
 		return new RolesAuthority(owner, Authority(address(0)));
 	}

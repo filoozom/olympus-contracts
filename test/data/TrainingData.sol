@@ -5,8 +5,8 @@ pragma solidity ^0.8.13;
 import { Probabilities } from 'src/lib/Randomness.sol';
 
 // Lib
-import { ToDynamicLib } from '../lib/ToDynamicLib.sol';
-import { ProbabilitiesLib } from '../lib/ProbabilitiesLib.sol';
+import { ToDynamicUtils } from '../lib/ToDynamicUtils.sol';
+import { ProbabilitiesUtils } from '../lib/ProbabilitiesUtils.sol';
 
 library TrainingData {
 	function getProbabilities()
@@ -21,11 +21,11 @@ library TrainingData {
 	}
 
 	function getDurations() public pure returns (uint32[] memory durations) {
-		return ToDynamicLib.toDynamic([uint32(86400), 259200, 604800]);
+		return ToDynamicUtils.toDynamic([uint32(86400), 259200, 604800]);
 	}
 
 	function getShares() public pure returns (uint8[] memory shares) {
-		return ToDynamicLib.toDynamic([40, 30, 20, 10]);
+		return ToDynamicUtils.toDynamic([40, 30, 20, 10]);
 	}
 
 	function getProbabilities(uint16[4] memory results)
@@ -34,6 +34,6 @@ library TrainingData {
 		returns (Probabilities memory probabilities)
 	{
 		return
-			ProbabilitiesLib.create(getShares(), ToDynamicLib.toDynamic(results));
+			ProbabilitiesUtils.create(getShares(), ToDynamicUtils.toDynamic(results));
 	}
 }
