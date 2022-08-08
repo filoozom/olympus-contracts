@@ -1,11 +1,12 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.15;
 
 // Solmate
 import { ERC20 } from 'solmate/tokens/ERC20.sol';
 import { ERC721 } from 'solmate/tokens/ERC721.sol';
 import { ERC1155 } from 'solmate/tokens/ERC1155.sol';
 import { SafeTransferLib } from 'solmate/utils/SafeTransferLib.sol';
+import { Auth, Authority } from 'solmate/auth/Auth.sol';
 
 // Custom
 import { BurnableBEP20 } from './lib/BurnableBEP20.sol';
@@ -30,7 +31,7 @@ struct Character {
 	Rarities rarity;
 }
 
-contract Characters is ERC721 {
+contract Characters is ERC721, Auth {
 	event Minted(address indexed owner, uint256 indexed id, Rarities rarity);
 	event SetNickname(uint256 indexed id, string name);
 	event Evolve(uint256 indexed id, uint256 newLevel);
@@ -42,9 +43,11 @@ contract Characters is ERC721 {
 	constructor(
 		string memory _name,
 		string memory _symbol,
+		address _owner,
+		Authority _authority,
 		BurnableBEP20 _stones,
 		uint8[] memory _levelCosts
-	) ERC721(_name, _symbol) {
+	) ERC721(_name, _symbol) Auth(_owner, _authority) {
 		stones = _stones;
 		levelCosts = _levelCosts;
 	}

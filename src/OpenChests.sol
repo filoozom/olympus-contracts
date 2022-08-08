@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.15;
 
 // Chainlink
 import { VRFCoordinatorV2Interface } from 'chainlink/interfaces/VRFCoordinatorV2Interface.sol';
@@ -58,8 +58,9 @@ contract OpenChests is IOpenChests, ERC721, VRFConsumerBaseV2, Auth {
 	ChainlinkConfig chainlinkConfig;
 	MintConfig public mintConfig;
 
-	// Oepn chests
-	uint256 chestsIndex = 0;
+	// Open chests
+	/// @dev start at 1 in case the requestId is not found
+	uint256 chestsIndex = 1;
 	mapping(uint256 => uint256) chests;
 	mapping(uint256 => uint256) requestIds;
 
@@ -96,8 +97,11 @@ contract OpenChests is IOpenChests, ERC721, VRFConsumerBaseV2, Auth {
 	}
 
 	function mint(address to, uint256 chestId) external requiresAuth {
+		// Mint an open chest
 		uint256 id = chestsIndex++;
 		_mint(to, id);
+
+		// Request random number
 		uint256 requestId = chainlinkConfig.coordinator.requestRandomWords(
 			chainlinkConfig.keyHash,
 			chainlinkConfig.subscriptionId,
@@ -105,6 +109,8 @@ contract OpenChests is IOpenChests, ERC721, VRFConsumerBaseV2, Auth {
 			chainlinkConfig.callbackGasLimit,
 			1
 		);
+
+		// Set state
 		requestIds[requestId] = id;
 		chests[id] = chestId;
 	}
@@ -182,6 +188,8 @@ contract OpenChests is IOpenChests, ERC721, VRFConsumerBaseV2, Auth {
 		internal
 		override
 	{
-		open(requestIds[requestId], randomWords[0]);
+		uint256 id = requestIds[requestId];
+		require(id > 0, 'CHEST_NOT_FOUND');
+		open(id, randomWords[0]);
 	}
 }

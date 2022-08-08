@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.15;
 
 /// @notice Probability that some result happens based on its shares
 /// @notice The probability of getting results[0] is shares[0] / sum

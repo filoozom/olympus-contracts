@@ -1,6 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.15;
 import 'forge-std/Test.sol';
+
+// Solmate
+import { Authority } from 'solmate/auth/Auth.sol';
 
 // Custom
 import { Characters, Rarities, Character } from 'src/Characters.sol';
@@ -29,6 +32,8 @@ contract CharactersTest is Test {
 		characters = new Characters(
 			'Name',
 			'Symbol',
+			address(this),
+			AuthorityData.getNull(),
 			Stones(address(stones)),
 			CharactersData.getLevelCosts()
 		);

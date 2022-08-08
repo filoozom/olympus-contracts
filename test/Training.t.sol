@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity ^0.8.15;
 import 'forge-std/Test.sol';
 
 // Custom
@@ -21,6 +21,8 @@ contract TrainingTest is Test {
 		characters = new Characters(
 			'Name',
 			'Symbol',
+			address(this),
+			AuthorityData.getNull(),
 			Stones(address(0)),
 			new uint8[](0)
 		);
