@@ -33,6 +33,13 @@ import { AuthorityData } from './data/AuthorityData.sol';
 
 contract OpenChestsTest is Test {
 	// Events
+	event ChestClaimed(uint256 indexed id, uint256 random);
+	event RandomWordsFulfilled(
+		uint256 indexed requestId,
+		uint256 outputSeed,
+		uint96 payment,
+		bool success
+	);
 	event RandomWordsRequested(
 		bytes32 indexed keyHash,
 		uint256 requestId,
@@ -159,8 +166,18 @@ contract OpenChestsTest is Test {
 			}
 		}
 
-		// Fulfill the random word
-		coordinator.fulfillRandomWords(requestId, address(chests));
+		// Create a random word
+		uint256[] memory randomWords = new uint256[](1);
+		randomWords[0] = uint256(keccak256(abi.encode(requestId, 0)));
+
+		// Fulfill the random word and expect the ChestClaimed event
+		vm.expectEmit(true, true, true, true);
+		emit ChestClaimed(1, randomWords[0]);
+		coordinator.fulfillRandomWordsWithOverride(
+			requestId,
+			address(chests),
+			randomWords
+		);
 
 		// Reused variables
 		uint256 balance;
