@@ -10,6 +10,7 @@ import { Characters } from 'src/Characters.sol';
 import { Chests } from 'src/Chests.sol';
 import { Furnace } from 'src/Furnace.sol';
 import { Olymp } from 'src/Olymp.sol';
+import { OpenChests } from 'src/OpenChests.sol';
 import { Powder } from 'src/Powder.sol';
 import { Stones } from 'src/Stones.sol';
 import { Training } from 'src/Training.sol';
@@ -19,7 +20,8 @@ enum Roles {
 	PowderMinter,
 	StonesMinter,
 	OlympMinter,
-	CharactersMinter
+	CharactersMinter,
+	OpenChestsMinter
 }
 
 struct TrainingConfig {
@@ -44,11 +46,7 @@ library AuthorityUtils {
 	}
 
 	function setupChests(RolesAuthority authority, Chests chests) public {
-		address addr = address(chests);
-		authority.setUserRole(addr, uint8(Roles.PowderMinter), true);
-		authority.setUserRole(addr, uint8(Roles.OlympMinter), true);
-		authority.setUserRole(addr, uint8(Roles.StonesMinter), true);
-		authority.setUserRole(addr, uint8(Roles.CharactersMinter), true);
+		authority.setUserRole(address(chests), uint8(Roles.OpenChestsMinter), true);
 	}
 
 	function setupFurnace(RolesAuthority authority, Furnace furnace) public {
@@ -62,6 +60,23 @@ library AuthorityUtils {
 			MintableBEP20.mint.selector,
 			true
 		);
+	}
+
+	function setupOpenChests(RolesAuthority authority, OpenChests openChests)
+		public
+	{
+		authority.setRoleCapability(
+			uint8(Roles.OpenChestsMinter),
+			address(openChests),
+			OpenChests.mint.selector,
+			true
+		);
+
+		address addr = address(openChests);
+		authority.setUserRole(addr, uint8(Roles.PowderMinter), true);
+		authority.setUserRole(addr, uint8(Roles.OlympMinter), true);
+		authority.setUserRole(addr, uint8(Roles.StonesMinter), true);
+		authority.setUserRole(addr, uint8(Roles.CharactersMinter), true);
 	}
 
 	function setupPowder(RolesAuthority authority, Powder powder) public {
