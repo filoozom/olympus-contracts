@@ -184,7 +184,9 @@ contract OpenChestsTest is Test {
 
 		// Check olymp balance
 		balance = mintConfig.olymp.balanceOf(user);
-		assertTrue(balance == 1600 || balance == 3200 || balance == 6400);
+		assertTrue(
+			balance == 0 || balance == 1600 || balance == 3200 || balance == 6400
+		);
 
 		// Check powder balance
 		balance = mintConfig.powder.balanceOf(user);
