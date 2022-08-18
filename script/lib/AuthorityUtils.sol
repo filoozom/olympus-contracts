@@ -9,6 +9,7 @@ import { Authority } from 'solmate/auth/Auth.sol';
 import { Characters } from 'src/Characters.sol';
 import { Chests } from 'src/Chests.sol';
 import { Furnace } from 'src/Furnace.sol';
+import { Marketplace } from 'src/Marketplace.sol';
 import { Olymp } from 'src/Olymp.sol';
 import { OpenChests } from 'src/OpenChests.sol';
 import { Powder } from 'src/Powder.sol';
@@ -21,7 +22,9 @@ enum Roles {
 	StonesMinter,
 	OlympMinter,
 	CharactersMinter,
-	OpenChestsMinter
+	OpenChestsMinter,
+	MarketplaceTokenAllower,
+	MarketplaceCurrencySetter
 }
 
 struct TrainingConfig {
@@ -51,6 +54,14 @@ library AuthorityUtils {
 
 	function setupFurnace(RolesAuthority authority, Furnace furnace) public {
 		authority.setUserRole(address(furnace), uint8(Roles.StonesMinter), true);
+	}
+
+	function setupMarketplace(RolesAuthority authority, Marketplace marketplace)
+		public
+	{
+		address addr = address(marketplace);
+		authority.setUserRole(addr, uint8(Roles.MarketplaceTokenAllower), true);
+		authority.setUserRole(addr, uint8(Roles.MarketplaceCurrencySetter), true);
 	}
 
 	function setupOlymp(RolesAuthority authority, Olymp olymp) public {

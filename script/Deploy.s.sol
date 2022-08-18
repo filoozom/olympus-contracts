@@ -8,9 +8,13 @@ import { VRFCoordinatorV2Interface } from 'chainlink/interfaces/VRFCoordinatorV2
 // Solmate
 import { RolesAuthority } from 'solmate/auth/authorities/RolesAuthority.sol';
 import { ERC20 } from 'solmate/tokens/ERC20.sol';
+import { Authority } from 'solmate/auth/Auth.sol';
 
 // Lib
 import { AuthorityUtils } from './lib/AuthorityUtils.sol';
+
+// Mocks
+import { Currency } from './mocks/Currency.sol';
 
 // Data
 import { AuthorityData } from './data/AuthorityData.sol';
@@ -32,7 +36,7 @@ import { Training } from 'src/Training.sol';
 
 contract DeployScript is Script {
 	// Owner and beneficiary
-	address owner = address(this);
+	address owner;
 	address constant beneficiary = address(0x1);
 
 	// Characters
@@ -80,8 +84,7 @@ contract DeployScript is Script {
 
 	/* Testnet */
 	// Currency
-	ERC20 constant currency =
-		ERC20(address(0xeD24FC36d5Ee211Ea25A80239Fb8C4Cfd80f12Ee));
+	ERC20 currency;
 
 	// OpenChests
 	ChainlinkConfig chainlinkConfig =
@@ -92,13 +95,21 @@ contract DeployScript is Script {
 			callbackGasLimit: 500000,
 			requestConfirmations: 3,
 			keyHash: 0xd4bb89654db74673a187bd804519e65e3f71a52bc55f11da7601a13dcf505314,
-			subscriptionId: 0
+			subscriptionId: 1617
 		});
 
-	function setUp() public {}
+	function setUp() public {
+		owner = msg.sender;
+	}
 
 	function run() public {
 		vm.startBroadcast();
+
+		if (address(currency) == address(0)) {
+			currency = ERC20(
+				new Currency('Currency', 'CUR', owner, Authority(address(0)))
+			);
+		}
 
 		/* Deploy */
 		// Step 0
@@ -130,20 +141,21 @@ contract DeployScript is Script {
 		Chests chests = deployChests(openChests);
 
 		/* Configure */
-		// Marketplace
-		marketplace.allowToken(address(characters), Types.ERC721);
-		marketplace.allowToken(address(chests), Types.ERC1155);
-		marketplace.allowToken(address(stones), Types.ERC20);
-
 		// Authority
 		AuthorityUtils.setupCharacters(authority, characters);
 		AuthorityUtils.setupChests(authority, chests);
 		AuthorityUtils.setupFurnace(authority, furnace);
+		AuthorityUtils.setupMarketplace(authority, marketplace);
 		AuthorityUtils.setupOlymp(authority, olymp);
 		AuthorityUtils.setupOpenChests(authority, openChests);
 		AuthorityUtils.setupPowder(authority, powder);
 		AuthorityUtils.setupStones(authority, stones);
 		AuthorityUtils.setupTraining(authority, training);
+
+		// Marketplace
+		marketplace.allowToken(address(characters), Types.ERC721);
+		marketplace.allowToken(address(chests), Types.ERC1155);
+		marketplace.allowToken(address(stones), Types.ERC20);
 
 		vm.stopBroadcast();
 	}
