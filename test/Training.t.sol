@@ -9,8 +9,8 @@ import { Stones } from 'src/Stones.sol';
 import { Powder } from 'src/Powder.sol';
 
 // Data
-import { TrainingData } from './data/TrainingData.sol';
-import { AuthorityData } from './data/AuthorityData.sol';
+import { TrainingData } from 'script/data/TrainingData.sol';
+import { AuthorityData } from 'script/data/AuthorityData.sol';
 
 contract TrainingTest is Test {
 	Characters characters;

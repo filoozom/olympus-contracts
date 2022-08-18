@@ -10,7 +10,7 @@ import { MintableBEP20 } from 'src/lib/MintableBEP20.sol';
 import { BurnableBEP20 } from 'src/lib/BurnableBEP20.sol';
 
 // Data
-import { AuthorityData } from './data/AuthorityData.sol';
+import { AuthorityData } from 'script/data/AuthorityData.sol';
 
 contract FurnaceTest is Test {
 	event Transfer(address indexed from, address indexed to, uint256 amount);

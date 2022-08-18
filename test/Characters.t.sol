@@ -10,8 +10,8 @@ import { Characters, Rarities, Character } from 'src/Characters.sol';
 import { Stones } from 'src/Stones.sol';
 
 // Data
-import { CharactersData } from './data/CharactersData.sol';
-import { AuthorityData } from './data/AuthorityData.sol';
+import { CharactersData } from 'script/data/CharactersData.sol';
+import { AuthorityData } from 'script/data/AuthorityData.sol';
 
 contract CharactersTest is Test {
 	event Minted(address indexed owner, uint256 indexed id, Rarities rarity);

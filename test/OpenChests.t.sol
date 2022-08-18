@@ -26,10 +26,10 @@ import { OpenChests } from 'src/OpenChests.sol';
 import { ERC20Mock } from './mocks/ERC20Mock.sol';
 
 // Data
-import { CharactersData } from './data/CharactersData.sol';
-import { ChestsData } from './data/ChestsData.sol';
-import { OpenChestsData } from './data/OpenChestsData.sol';
-import { AuthorityData } from './data/AuthorityData.sol';
+import { CharactersData } from 'script/data/CharactersData.sol';
+import { ChestsData } from 'script/data/ChestsData.sol';
+import { OpenChestsData } from 'script/data/OpenChestsData.sol';
+import { AuthorityData } from 'script/data/AuthorityData.sol';
 
 contract OpenChestsTest is Test {
 	// Events

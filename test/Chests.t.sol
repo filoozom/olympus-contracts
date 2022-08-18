@@ -14,7 +14,7 @@ import { ERC20Mock } from './mocks/ERC20Mock.sol';
 import { OpenChestsMock } from './mocks/OpenChestsMock.sol';
 
 // Data
-import { ChestsData } from './data/ChestsData.sol';
+import { ChestsData } from 'script/data/ChestsData.sol';
 
 contract ChestsTest is Test {
 	event ChestOpened(address indexed owner, uint256 indexed id);
