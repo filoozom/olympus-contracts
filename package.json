@@ -1,4 +1,6 @@
 {
+	"private": false,
+	"type": "module",
 	"name": "@olympusgame/nft-contracts",
 	"version": "0.0.0",
 	"scripts": {
