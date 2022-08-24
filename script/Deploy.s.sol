@@ -34,9 +34,8 @@ import { Powder } from 'src/Powder.sol';
 import { Stones } from 'src/Stones.sol';
 import { Training } from 'src/Training.sol';
 
-contract DeployScript is Script {
+contract DeployScript is Script, AuthorityUtils {
 	// Owner and beneficiary
-	address owner;
 	address constant beneficiary = address(0x1);
 
 	// Characters
@@ -113,7 +112,7 @@ contract DeployScript is Script {
 
 		/* Deploy */
 		// Step 0
-		RolesAuthority authority = deployAuthority();
+		deployAuthority();
 
 		// Step 1
 		Marketplace marketplace = deployMarketplace(authority);
@@ -142,15 +141,15 @@ contract DeployScript is Script {
 
 		/* Configure */
 		// Authority
-		AuthorityUtils.setupCharacters(authority, characters);
-		AuthorityUtils.setupChests(authority, chests);
-		AuthorityUtils.setupFurnace(authority, furnace);
-		AuthorityUtils.setupMarketplace(authority, marketplace);
-		AuthorityUtils.setupOlymp(authority, olymp);
-		AuthorityUtils.setupOpenChests(authority, openChests);
-		AuthorityUtils.setupPowder(authority, powder);
-		AuthorityUtils.setupStones(authority, stones);
-		AuthorityUtils.setupTraining(authority, training);
+		setupCharacters(characters);
+		setupChests(chests);
+		setupFurnace(furnace);
+		setupMarketplace(marketplace);
+		setupOlymp(olymp);
+		setupOpenChests(openChests);
+		setupPowder(powder);
+		setupStones(stones);
+		setupTraining(training);
 
 		// Marketplace
 		marketplace.allowToken(address(characters), Types.ERC721);
@@ -158,10 +157,6 @@ contract DeployScript is Script {
 		marketplace.allowToken(address(stones), Types.ERC20);
 
 		vm.stopBroadcast();
-	}
-
-	function deployAuthority() private returns (RolesAuthority) {
-		return AuthorityUtils.deploy(owner);
 	}
 
 	function deployCharacters(RolesAuthority authority, Stones stones)

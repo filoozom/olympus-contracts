@@ -32,55 +32,57 @@ struct TrainingConfig {
 	Powder powder;
 }
 
-library AuthorityUtils {
-	function deploy(address owner) public returns (RolesAuthority) {
-		return new RolesAuthority(owner, Authority(address(0)));
+contract AuthorityUtils {
+	address owner;
+	RolesAuthority authority;
+
+	function deployAuthority() public {
+		authority = new RolesAuthority(owner, Authority(address(0)));
 	}
 
-	function setupCharacters(RolesAuthority authority, Characters characters)
-		public
-	{
-		authority.setRoleCapability(
+	function setRoleCapability(
+		uint8 role,
+		address target,
+		bytes4 functionSig
+	) private {
+		authority.setRoleCapability(role, target, functionSig, true);
+	}
+
+	function setupCharacters(Characters characters) public {
+		setRoleCapability(
 			uint8(Roles.CharactersMinter),
 			address(characters),
-			Characters.mint.selector,
-			true
+			Characters.mint.selector
 		);
 	}
 
-	function setupChests(RolesAuthority authority, Chests chests) public {
+	function setupChests(Chests chests) public {
 		authority.setUserRole(address(chests), uint8(Roles.OpenChestsMinter), true);
 	}
 
-	function setupFurnace(RolesAuthority authority, Furnace furnace) public {
+	function setupFurnace(Furnace furnace) public {
 		authority.setUserRole(address(furnace), uint8(Roles.StonesMinter), true);
 	}
 
-	function setupMarketplace(RolesAuthority authority, Marketplace marketplace)
-		public
-	{
+	function setupMarketplace(Marketplace marketplace) public {
 		address addr = address(marketplace);
 		authority.setUserRole(addr, uint8(Roles.MarketplaceTokenAllower), true);
 		authority.setUserRole(addr, uint8(Roles.MarketplaceCurrencySetter), true);
 	}
 
-	function setupOlymp(RolesAuthority authority, Olymp olymp) public {
-		authority.setRoleCapability(
+	function setupOlymp(Olymp olymp) public {
+		setRoleCapability(
 			uint8(Roles.OlympMinter),
 			address(olymp),
-			MintableBEP20.mint.selector,
-			true
+			MintableBEP20.mint.selector
 		);
 	}
 
-	function setupOpenChests(RolesAuthority authority, OpenChests openChests)
-		public
-	{
-		authority.setRoleCapability(
+	function setupOpenChests(OpenChests openChests) public {
+		setRoleCapability(
 			uint8(Roles.OpenChestsMinter),
 			address(openChests),
-			OpenChests.mint.selector,
-			true
+			OpenChests.mint.selector
 		);
 
 		address addr = address(openChests);
@@ -90,25 +92,23 @@ library AuthorityUtils {
 		authority.setUserRole(addr, uint8(Roles.CharactersMinter), true);
 	}
 
-	function setupPowder(RolesAuthority authority, Powder powder) public {
-		authority.setRoleCapability(
+	function setupPowder(Powder powder) public {
+		setRoleCapability(
 			uint8(Roles.PowderMinter),
 			address(powder),
-			MintableBEP20.mint.selector,
-			true
+			MintableBEP20.mint.selector
 		);
 	}
 
-	function setupStones(RolesAuthority authority, Stones stones) public {
-		authority.setRoleCapability(
+	function setupStones(Stones stones) public {
+		setRoleCapability(
 			uint8(Roles.StonesMinter),
 			address(stones),
-			MintableBEP20.mint.selector,
-			true
+			MintableBEP20.mint.selector
 		);
 	}
 
-	function setupTraining(RolesAuthority authority, Training training) public {
+	function setupTraining(Training training) public {
 		authority.setUserRole(address(training), uint8(Roles.PowderMinter), true);
 	}
 }
