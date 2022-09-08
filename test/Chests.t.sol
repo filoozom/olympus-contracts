@@ -16,6 +16,9 @@ import { OpenChestsMock } from './mocks/OpenChestsMock.sol';
 // Data
 import { ChestsData } from 'script/data/ChestsData.sol';
 
+// Lib
+import { ToDynamicUtils } from 'script/lib/ToDynamicUtils.sol';
+
 contract ChestsTest is Test {
 	event ChestOpened(address indexed owner, uint256 indexed id);
 	event OpenChestsMinted(address indexed to, uint256 indexed chestId);
@@ -109,6 +112,99 @@ contract ChestsTest is Test {
 
 		// Make sure that there are actually 1000 minted chests
 		assertEq(getChest(0).minted, 1000);
+	}
+
+	function testCanBatchBuyChest() public {
+		address user = address(1);
+
+		// Prank EOA so we don't have to implement ERC1155TokenReceiver
+		currency.mint(user, 1e64);
+		vm.startPrank(user);
+
+		// Mint and approve currency
+		currency.approve(address(chests), 1e64);
+
+		// Mint 6 rare chests
+		chests.batchMint(
+			ToDynamicUtils.toDynamic([uint256(0), 2]),
+			ToDynamicUtils.toDynamic([uint256(8), 6])
+		);
+
+		// Check state
+		assertEq(getChest(0).minted, 8);
+		assertEq(getChest(2).minted, 6);
+
+		// Check balances
+		uint256 price = 320e18 + 960e18;
+		assertEq(currency.balanceOf(recipient), price);
+		assertEq(currency.balanceOf(user), 1e64 - price);
+		assertEq(chests.balanceOf(user, 0), 8);
+		assertEq(chests.balanceOf(user, 2), 6);
+	}
+
+	function testCanBatchBuySameChest() public {
+		address user = address(1);
+
+		// Prank EOA so we don't have to implement ERC1155TokenReceiver
+		currency.mint(user, 1e64);
+		vm.startPrank(user);
+
+		// Mint and approve currency
+		currency.approve(address(chests), 1e64);
+
+		// Mint 6 rare chests
+		chests.batchMint(
+			ToDynamicUtils.toDynamic([uint256(0), 0, 0]),
+			ToDynamicUtils.toDynamic([uint256(8), 6, 6])
+		);
+
+		// Check state
+		assertEq(getChest(0).minted, 20);
+
+		// Check balances
+		uint256 price = 800e18;
+		assertEq(currency.balanceOf(recipient), price);
+		assertEq(currency.balanceOf(user), 1e64 - price);
+		assertEq(chests.balanceOf(user, 0), 20);
+	}
+
+	function testCannotBatchBuyMoreChestsThanAvailable() public {
+		currency.mint(address(1), 1e64);
+		vm.startPrank(address(1));
+
+		// Mint and approve currency
+		currency.approve(address(chests), 1e64);
+
+		// Store ids and amounts because `vm.expectRevert` doesn't
+		// work with inlined `ToDynamicUtils.toDynamic`
+		uint256[] memory ids;
+		uint256[] memory amounts;
+
+		// Mint too many chests
+		ids = ToDynamicUtils.toDynamic([uint256(0)]);
+		amounts = ToDynamicUtils.toDynamic([uint256(1001)]);
+		vm.expectRevert('NOT_ENOUGH_LEFT');
+		chests.batchMint(ids, amounts);
+
+		// Mint all chests and then try to mint one more
+		ids = ToDynamicUtils.toDynamic([uint256(0)]);
+		amounts = ToDynamicUtils.toDynamic([uint256(1000)]);
+		chests.batchMint(ids, amounts);
+
+		// Mint one more chest than available
+		ids = ToDynamicUtils.toDynamic([uint256(0)]);
+		amounts = ToDynamicUtils.toDynamic([uint256(1)]);
+		vm.expectRevert('NOT_ENOUGH_LEFT');
+		chests.batchMint(ids, amounts);
+
+		// Make sure that there are actually 1000 minted chests
+		assertEq(getChest(0).minted, 1000);
+
+		// Mint the same chest multiple times in one batch
+		ids = ToDynamicUtils.toDynamic([uint256(1), 1, 1, 1]);
+		amounts = ToDynamicUtils.toDynamic([uint256(250), 200, 25, 26]);
+		vm.expectRevert('NOT_ENOUGH_LEFT');
+		chests.batchMint(ids, amounts);
 	}
 
 	function testCanOpenChest() public {

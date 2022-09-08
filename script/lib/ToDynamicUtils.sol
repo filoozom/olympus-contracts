@@ -147,4 +147,49 @@ library ToDynamicUtils {
 			result[i] = array[i];
 		}
 	}
+
+	// uint256
+	function toDynamic(uint256[1] memory array)
+		public
+		pure
+		returns (uint256[] memory result)
+	{
+		result = new uint256[](array.length);
+		for (uint256 i = 0; i < array.length; i++) {
+			result[i] = array[i];
+		}
+	}
+
+	function toDynamic(uint256[2] memory array)
+		public
+		pure
+		returns (uint256[] memory result)
+	{
+		result = new uint256[](array.length);
+		for (uint256 i = 0; i < array.length; i++) {
+			result[i] = array[i];
+		}
+	}
+
+	function toDynamic(uint256[3] memory array)
+		public
+		pure
+		returns (uint256[] memory result)
+	{
+		result = new uint256[](array.length);
+		for (uint256 i = 0; i < array.length; i++) {
+			result[i] = array[i];
+		}
+	}
+
+	function toDynamic(uint256[4] memory array)
+		public
+		pure
+		returns (uint256[] memory result)
+	{
+		result = new uint256[](array.length);
+		for (uint256 i = 0; i < array.length; i++) {
+			result[i] = array[i];
+		}
+	}
 }

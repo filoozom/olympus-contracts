@@ -3,7 +3,7 @@ pragma solidity ^0.8.15;
 
 // Solmate
 import { ERC20 } from 'solmate/tokens/ERC20.sol';
-import { ERC1155 } from 'solmate/tokens/ERC1155.sol';
+import { ERC1155, ERC1155TokenReceiver } from 'solmate/tokens/ERC1155.sol';
 import { SafeTransferLib } from 'solmate/utils/SafeTransferLib.sol';
 
 // Custom
@@ -65,11 +65,43 @@ contract Chests is ERC1155 {
 		uint256 price;
 		unchecked {
 			price = chest.price * amount;
+			chest.minted += amount;
 		}
 
 		SafeTransferLib.safeTransferFrom(currency, msg.sender, beneficiary, price);
 		_mint(msg.sender, id, amount, '');
-		chest.minted += amount;
+	}
+
+	function batchMint(uint256[] calldata ids, uint256[] calldata amounts)
+		public
+	{
+		require(ids.length == amounts.length, 'LENGTH_MISMATCH');
+		uint256 price;
+
+		// Storing these outside the loop saves some gas per iteration.
+		uint256 id;
+		uint256 amount;
+		Chest storage chest;
+
+		for (uint256 i = 0; i < ids.length; ) {
+			id = ids[i];
+			amount = amounts[i];
+			chest = chests[id];
+
+			unchecked {
+				// max - minted can never be < 0
+				require(chest.max - chest.minted >= amount, 'NOT_ENOUGH_LEFT');
+			}
+
+			unchecked {
+				chest.minted += uint16(amount);
+				price += chest.price * amount;
+				++i;
+			}
+		}
+
+		SafeTransferLib.safeTransferFrom(currency, msg.sender, beneficiary, price);
+		_batchMint(msg.sender, ids, amounts, '');
 	}
 
 	function open(uint256 id) public {
