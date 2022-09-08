@@ -66,17 +66,18 @@ contract ChestsTest is Test {
 		assertEq(getChest(2).minted, 6);
 
 		// Check balances
-		assertEq(currency.balanceOf(recipient), 960e18);
-		assertEq(currency.balanceOf(user), 1e64 - 960e18);
+		uint256 price = 600e18;
+		assertEq(currency.balanceOf(recipient), price);
+		assertEq(currency.balanceOf(user), 1e64 - price);
 		assertEq(chests.balanceOf(user, 2), 6);
 	}
 
 	function testCanBuyAllChests() public {
-		currency.mint(address(1), 580e18);
+		currency.mint(address(1), 330e18);
 		vm.startPrank(address(1));
 
 		// Mint and approve currency
-		currency.approve(address(chests), 580e18);
+		currency.approve(address(chests), 330e18);
 
 		// Mint one of each chest
 		chests.mint(0, 1);
@@ -135,7 +136,7 @@ contract ChestsTest is Test {
 		assertEq(getChest(2).minted, 6);
 
 		// Check balances
-		uint256 price = 320e18 + 960e18;
+		uint256 price = 240e18 + 600e18;
 		assertEq(currency.balanceOf(recipient), price);
 		assertEq(currency.balanceOf(user), 1e64 - price);
 		assertEq(chests.balanceOf(user, 0), 8);
@@ -162,7 +163,7 @@ contract ChestsTest is Test {
 		assertEq(getChest(0).minted, 20);
 
 		// Check balances
-		uint256 price = 800e18;
+		uint256 price = 600e18;
 		assertEq(currency.balanceOf(recipient), price);
 		assertEq(currency.balanceOf(user), 1e64 - price);
 		assertEq(chests.balanceOf(user, 0), 20);
@@ -202,7 +203,7 @@ contract ChestsTest is Test {
 
 		// Mint the same chest multiple times in one batch
 		ids = ToDynamicUtils.toDynamic([uint256(1), 1, 1, 1]);
-		amounts = ToDynamicUtils.toDynamic([uint256(250), 200, 25, 26]);
+		amounts = ToDynamicUtils.toDynamic([uint256(400), 200, 25, 26]);
 		vm.expectRevert('NOT_ENOUGH_LEFT');
 		chests.batchMint(ids, amounts);
 	}
