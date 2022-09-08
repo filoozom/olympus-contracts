@@ -14,6 +14,8 @@ import { AuthorityData } from 'script/data/AuthorityData.sol';
 
 contract FurnaceTest is Test {
 	event Transfer(address indexed from, address indexed to, uint256 amount);
+	event Forge(address indexed user, uint8 count, uint64 end);
+	event Redeem(address indexed user, uint8 count);
 
 	Furnace furnace;
 
@@ -52,6 +54,19 @@ contract FurnaceTest is Test {
 		powder.mint(address(this), 300);
 		powder.approve(address(furnace), 300);
 
+		// Expect burn event of 300 powder
+		uint256 snapshot = vm.snapshot();
+		vm.expectEmit(true, true, true, true, address(powder));
+		emit Transfer(address(this), address(0), 300);
+
+		// Forge 3 stones
+		furnace.forge(3);
+		vm.revertTo(snapshot);
+
+		// Expect forge event
+		vm.expectEmit(true, true, true, true, address(furnace));
+		emit Forge(address(this), 3, uint64(block.timestamp) + 8 hours);
+
 		// Forge 3 stones
 		furnace.forge(3);
 	}
@@ -86,8 +101,17 @@ contract FurnaceTest is Test {
 		vm.warp(block.timestamp + 8 hours);
 
 		// Expect transfer event of 3 stones
-		vm.expectEmit(true, true, true, true);
+		uint256 snapshot = vm.snapshot();
+		vm.expectEmit(true, true, true, true, address(stones));
 		emit Transfer(address(0), address(this), 3);
+
+		// Redeem
+		furnace.redeem();
+		vm.revertTo(snapshot);
+
+		// Expect forge event
+		vm.expectEmit(true, true, true, true, address(furnace));
+		emit Redeem(address(this), 3);
 
 		// Redeem
 		furnace.redeem();

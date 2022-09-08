@@ -19,6 +19,9 @@ contract Furnace {
 
 	mapping(address => Pending) pendings;
 
+	event Forge(address indexed user, uint8 count, uint64 end);
+	event Redeem(address indexed user, uint8 count);
+
 	constructor(
 		BurnableBEP20 _powder,
 		MintableBEP20 _stones,
@@ -34,12 +37,12 @@ contract Furnace {
 
 	function forge(uint8 count) public {
 		require(pendings[msg.sender].end == 0, 'NOT_DONE');
+		uint64 end = uint64(block.timestamp) + duration;
 
 		powder.burnFrom(msg.sender, count * cost);
-		pendings[msg.sender] = Pending({
-			end: uint64(block.timestamp) + duration,
-			count: count
-		});
+		pendings[msg.sender] = Pending({ end: end, count: count });
+
+		emit Forge(msg.sender, count, end);
 	}
 
 	function redeem() public {
@@ -50,5 +53,7 @@ contract Furnace {
 		// More gas efficient than `delete pendings[msg.sender]`
 		pending.end = 0;
 		stones.mint(msg.sender, pending.count);
+
+		emit Redeem(msg.sender, pending.count);
 	}
 }
