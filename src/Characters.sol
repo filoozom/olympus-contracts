@@ -32,7 +32,12 @@ struct Character {
 }
 
 contract Characters is ERC721, Auth {
-	event Minted(address indexed owner, uint256 indexed id, Rarities rarity);
+	event Minted(
+		address indexed owner,
+		uint256 indexed character,
+		uint256 indexed id,
+		Rarities rarity
+	);
 	event SetNickname(uint256 indexed id, string name);
 	event Evolve(uint256 indexed id, uint256 newLevel);
 
@@ -58,11 +63,13 @@ contract Characters is ERC721, Auth {
 		Rarities rarity
 	) public {
 		require(id < 6, 'UNKNOWN_CHARACTER');
+
 		_mint(to, characters.length);
+		emit Minted(to, id, characters.length, rarity);
+
 		characters.push(
 			Character({ id: id, nickname: '', level: 1, rarity: rarity })
 		);
-		emit Minted(to, id, rarity);
 	}
 
 	function setNickname(uint256 id, string calldata nickname) public {

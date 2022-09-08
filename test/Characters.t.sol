@@ -14,7 +14,12 @@ import { CharactersData } from 'script/data/CharactersData.sol';
 import { AuthorityData } from 'script/data/AuthorityData.sol';
 
 contract CharactersTest is Test {
-	event Minted(address indexed owner, uint256 indexed id, Rarities rarity);
+	event Minted(
+		address indexed owner,
+		uint256 indexed character,
+		uint256 indexed id,
+		Rarities rarity
+	);
 	event SetNickname(uint256 indexed id, string name);
 	event Evolve(uint256 indexed id, uint256 newLevel);
 
@@ -42,7 +47,7 @@ contract CharactersTest is Test {
 	function testCanMint() public {
 		// Expect event
 		vm.expectEmit(true, true, true, true);
-		emit Minted(address(1), 3, Rarities.Gold);
+		emit Minted(address(1), 3, 0, Rarities.Gold);
 
 		// Mint
 		characters.mint(address(1), 3, Rarities.Gold);
