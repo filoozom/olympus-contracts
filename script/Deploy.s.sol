@@ -85,6 +85,8 @@ contract DeployScript is Script, AuthorityUtils {
 	// Currency
 	ERC20 currency;
 
+	/* BSC Testnet */
+	/*
 	// OpenChests
 	ChainlinkConfig chainlinkConfig =
 		ChainlinkConfig({
@@ -95,6 +97,20 @@ contract DeployScript is Script, AuthorityUtils {
 			requestConfirmations: 3,
 			keyHash: 0xd4bb89654db74673a187bd804519e65e3f71a52bc55f11da7601a13dcf505314,
 			subscriptionId: 1617
+		});
+	*/
+
+	/* Goerli Testnet */
+	// OpenChests
+	ChainlinkConfig chainlinkConfig =
+		ChainlinkConfig({
+			coordinator: VRFCoordinatorV2Interface(
+				address(0x2Ca8E0C643bDe4C2E08ab1fA0da3401AdAD7734D)
+			),
+			callbackGasLimit: 500000,
+			requestConfirmations: 3,
+			keyHash: 0x79d3d8832d904592c0bf9818b621522c988bb8b0c05cdc3b15aea1b6e8db0c15,
+			subscriptionId: 632
 		});
 
 	function setUp() public {
