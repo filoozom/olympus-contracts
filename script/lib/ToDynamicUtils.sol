@@ -4,7 +4,7 @@ pragma solidity ^0.8.15;
 library ToDynamicUtils {
 	// uint8
 	function toDynamic(uint8[1] memory array)
-		public
+		internal
 		pure
 		returns (uint8[] memory result)
 	{
@@ -15,7 +15,7 @@ library ToDynamicUtils {
 	}
 
 	function toDynamic(uint8[2] memory array)
-		public
+		internal
 		pure
 		returns (uint8[] memory result)
 	{
@@ -26,7 +26,7 @@ library ToDynamicUtils {
 	}
 
 	function toDynamic(uint8[3] memory array)
-		public
+		internal
 		pure
 		returns (uint8[] memory result)
 	{
@@ -37,7 +37,7 @@ library ToDynamicUtils {
 	}
 
 	function toDynamic(uint8[4] memory array)
-		public
+		internal
 		pure
 		returns (uint8[] memory result)
 	{
@@ -48,7 +48,7 @@ library ToDynamicUtils {
 	}
 
 	function toDynamic(uint8[5] memory array)
-		public
+		internal
 		pure
 		returns (uint8[] memory result)
 	{
@@ -60,7 +60,7 @@ library ToDynamicUtils {
 
 	// uint16
 	function toDynamic(uint16[1] memory array)
-		public
+		internal
 		pure
 		returns (uint16[] memory result)
 	{
@@ -71,7 +71,7 @@ library ToDynamicUtils {
 	}
 
 	function toDynamic(uint16[2] memory array)
-		public
+		internal
 		pure
 		returns (uint16[] memory result)
 	{
@@ -82,7 +82,7 @@ library ToDynamicUtils {
 	}
 
 	function toDynamic(uint16[3] memory array)
-		public
+		internal
 		pure
 		returns (uint16[] memory result)
 	{
@@ -93,7 +93,7 @@ library ToDynamicUtils {
 	}
 
 	function toDynamic(uint16[4] memory array)
-		public
+		internal
 		pure
 		returns (uint16[] memory result)
 	{
@@ -105,7 +105,7 @@ library ToDynamicUtils {
 
 	// uint32
 	function toDynamic(uint32[1] memory array)
-		public
+		internal
 		pure
 		returns (uint32[] memory result)
 	{
@@ -116,7 +116,7 @@ library ToDynamicUtils {
 	}
 
 	function toDynamic(uint32[2] memory array)
-		public
+		internal
 		pure
 		returns (uint32[] memory result)
 	{
@@ -127,7 +127,7 @@ library ToDynamicUtils {
 	}
 
 	function toDynamic(uint32[3] memory array)
-		public
+		internal
 		pure
 		returns (uint32[] memory result)
 	{
@@ -138,7 +138,7 @@ library ToDynamicUtils {
 	}
 
 	function toDynamic(uint32[4] memory array)
-		public
+		internal
 		pure
 		returns (uint32[] memory result)
 	{
@@ -150,7 +150,7 @@ library ToDynamicUtils {
 
 	// uint256
 	function toDynamic(uint256[1] memory array)
-		public
+		internal
 		pure
 		returns (uint256[] memory result)
 	{
@@ -161,7 +161,7 @@ library ToDynamicUtils {
 	}
 
 	function toDynamic(uint256[2] memory array)
-		public
+		internal
 		pure
 		returns (uint256[] memory result)
 	{
@@ -172,7 +172,7 @@ library ToDynamicUtils {
 	}
 
 	function toDynamic(uint256[3] memory array)
-		public
+		internal
 		pure
 		returns (uint256[] memory result)
 	{
@@ -183,7 +183,7 @@ library ToDynamicUtils {
 	}
 
 	function toDynamic(uint256[4] memory array)
-		public
+		internal
 		pure
 		returns (uint256[] memory result)
 	{

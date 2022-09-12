@@ -10,7 +10,7 @@ import { ToDynamicUtils } from '../lib/ToDynamicUtils.sol';
 import { ProbabilitiesUtils } from '../lib/ProbabilitiesUtils.sol';
 
 library OpenChestsData {
-	function getConfigs() public pure returns (ChestConfigs[] memory configs) {
+	function getConfigs() internal pure returns (ChestConfigs[] memory configs) {
 		uint256 i = 0;
 		configs = new ChestConfigs[](20);
 
@@ -45,7 +45,7 @@ library OpenChestsData {
 
 	// Common
 	function getCommonChestEvolvingStoneConfig()
-		public
+		internal
 		pure
 		returns (ChestConfigs memory)
 	{
@@ -59,7 +59,7 @@ library OpenChestsData {
 	}
 
 	function getCommonChestPowderConfig()
-		public
+		internal
 		pure
 		returns (ChestConfigs memory)
 	{
@@ -73,7 +73,7 @@ library OpenChestsData {
 	}
 
 	function getCommonChestOlympConfig()
-		public
+		internal
 		pure
 		returns (ChestConfigs memory)
 	{
@@ -87,7 +87,7 @@ library OpenChestsData {
 	}
 
 	function getCommonChestCharacterRarityConfig()
-		public
+		internal
 		pure
 		returns (ChestConfigs memory)
 	{
@@ -101,7 +101,7 @@ library OpenChestsData {
 	}
 
 	function getCommonChestCharacterConfig()
-		public
+		internal
 		pure
 		returns (ChestConfigs memory)
 	{
@@ -116,7 +116,7 @@ library OpenChestsData {
 
 	// Uncommon
 	function getUncommonChestEvolvingStoneConfig()
-		public
+		internal
 		pure
 		returns (ChestConfigs memory)
 	{
@@ -130,7 +130,7 @@ library OpenChestsData {
 	}
 
 	function getUncommonChestPowderConfig()
-		public
+		internal
 		pure
 		returns (ChestConfigs memory)
 	{
@@ -144,7 +144,7 @@ library OpenChestsData {
 	}
 
 	function getUncommonChestOlympConfig()
-		public
+		internal
 		pure
 		returns (ChestConfigs memory)
 	{
@@ -158,7 +158,7 @@ library OpenChestsData {
 	}
 
 	function getUncommonChestCharacterRarityConfig()
-		public
+		internal
 		pure
 		returns (ChestConfigs memory)
 	{
@@ -172,7 +172,7 @@ library OpenChestsData {
 	}
 
 	function getUncommonChestCharacterConfig()
-		public
+		internal
 		pure
 		returns (ChestConfigs memory)
 	{
@@ -187,7 +187,7 @@ library OpenChestsData {
 
 	// Rare
 	function getRareChestEvolvingStoneConfig()
-		public
+		internal
 		pure
 		returns (ChestConfigs memory)
 	{
@@ -201,7 +201,7 @@ library OpenChestsData {
 	}
 
 	function getRareChestPowderConfig()
-		public
+		internal
 		pure
 		returns (ChestConfigs memory)
 	{
@@ -214,7 +214,11 @@ library OpenChestsData {
 			);
 	}
 
-	function getRareChestOlympConfig() public pure returns (ChestConfigs memory) {
+	function getRareChestOlympConfig()
+		internal
+		pure
+		returns (ChestConfigs memory)
+	{
 		return
 			ProbabilitiesUtils.createConfig(
 				2,
@@ -225,7 +229,7 @@ library OpenChestsData {
 	}
 
 	function getRareChestCharacterRarityConfig()
-		public
+		internal
 		pure
 		returns (ChestConfigs memory)
 	{
@@ -239,7 +243,7 @@ library OpenChestsData {
 	}
 
 	function getRareChestCharacterConfig()
-		public
+		internal
 		pure
 		returns (ChestConfigs memory)
 	{
@@ -254,7 +258,7 @@ library OpenChestsData {
 
 	// Legendary
 	function getLegendaryChestEvolvingStoneConfig()
-		public
+		internal
 		pure
 		returns (ChestConfigs memory)
 	{
@@ -268,7 +272,7 @@ library OpenChestsData {
 	}
 
 	function getLegendaryChestPowderConfig()
-		public
+		internal
 		pure
 		returns (ChestConfigs memory)
 	{
@@ -282,7 +286,7 @@ library OpenChestsData {
 	}
 
 	function getLegendaryChestOlympConfig()
-		public
+		internal
 		pure
 		returns (ChestConfigs memory)
 	{
@@ -296,7 +300,7 @@ library OpenChestsData {
 	}
 
 	function getLegendaryChestCharacterRarityConfig()
-		public
+		internal
 		pure
 		returns (ChestConfigs memory)
 	{
@@ -310,7 +314,7 @@ library OpenChestsData {
 	}
 
 	function getLegendaryChestCharacterConfig()
-		public
+		internal
 		pure
 		returns (ChestConfigs memory)
 	{

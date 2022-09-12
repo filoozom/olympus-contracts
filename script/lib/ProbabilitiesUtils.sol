@@ -17,7 +17,7 @@ library ProbabilitiesUtils {
 	}
 
 	function create(uint8[] memory shares, uint16[] memory results)
-		public
+		internal
 		pure
 		returns (Probabilities memory probabilities)
 	{
@@ -30,7 +30,7 @@ library ProbabilitiesUtils {
 		Settings name,
 		uint8[] memory shares,
 		uint16[] memory results
-	) public pure returns (ChestConfigs memory config) {
+	) internal pure returns (ChestConfigs memory config) {
 		return
 			ChestConfigs({
 				chest: chest,

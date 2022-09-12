@@ -36,7 +36,7 @@ contract AuthorityUtils {
 	address owner;
 	RolesAuthority authority;
 
-	function deployAuthority() public {
+	function deployAuthority() internal {
 		authority = new RolesAuthority(owner, Authority(address(0)));
 	}
 
@@ -48,7 +48,7 @@ contract AuthorityUtils {
 		authority.setRoleCapability(role, target, functionSig, true);
 	}
 
-	function setupCharacters(Characters characters) public {
+	function setupCharacters(Characters characters) internal {
 		setRoleCapability(
 			uint8(Roles.CharactersMinter),
 			address(characters),
@@ -56,21 +56,21 @@ contract AuthorityUtils {
 		);
 	}
 
-	function setupChests(Chests chests) public {
+	function setupChests(Chests chests) internal {
 		authority.setUserRole(address(chests), uint8(Roles.OpenChestsMinter), true);
 	}
 
-	function setupFurnace(Furnace furnace) public {
+	function setupFurnace(Furnace furnace) internal {
 		authority.setUserRole(address(furnace), uint8(Roles.StonesMinter), true);
 	}
 
-	function setupMarketplace(Marketplace marketplace) public {
+	function setupMarketplace(Marketplace marketplace) internal {
 		address addr = address(marketplace);
 		authority.setUserRole(addr, uint8(Roles.MarketplaceTokenAllower), true);
 		authority.setUserRole(addr, uint8(Roles.MarketplaceCurrencySetter), true);
 	}
 
-	function setupOlymp(Olymp olymp) public {
+	function setupOlymp(Olymp olymp) internal {
 		setRoleCapability(
 			uint8(Roles.OlympMinter),
 			address(olymp),
@@ -78,7 +78,7 @@ contract AuthorityUtils {
 		);
 	}
 
-	function setupOpenChests(OpenChests openChests) public {
+	function setupOpenChests(OpenChests openChests) internal {
 		setRoleCapability(
 			uint8(Roles.OpenChestsMinter),
 			address(openChests),
@@ -92,7 +92,7 @@ contract AuthorityUtils {
 		authority.setUserRole(addr, uint8(Roles.CharactersMinter), true);
 	}
 
-	function setupPowder(Powder powder) public {
+	function setupPowder(Powder powder) internal {
 		setRoleCapability(
 			uint8(Roles.PowderMinter),
 			address(powder),
@@ -100,7 +100,7 @@ contract AuthorityUtils {
 		);
 	}
 
-	function setupStones(Stones stones) public {
+	function setupStones(Stones stones) internal {
 		setRoleCapability(
 			uint8(Roles.StonesMinter),
 			address(stones),
@@ -108,7 +108,7 @@ contract AuthorityUtils {
 		);
 	}
 
-	function setupTraining(Training training) public {
+	function setupTraining(Training training) internal {
 		authority.setUserRole(address(training), uint8(Roles.PowderMinter), true);
 	}
 }

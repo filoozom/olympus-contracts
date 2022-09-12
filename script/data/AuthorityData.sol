@@ -5,7 +5,7 @@ pragma solidity ^0.8.15;
 import { Authority } from 'solmate/auth/Auth.sol';
 
 library AuthorityData {
-	function getNull() public pure returns (Authority) {
+	function getNull() internal pure returns (Authority) {
 		return Authority(address(0));
 	}
 }

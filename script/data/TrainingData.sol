@@ -10,7 +10,7 @@ import { ProbabilitiesUtils } from '../lib/ProbabilitiesUtils.sol';
 
 library TrainingData {
 	function getProbabilities()
-		public
+		internal
 		pure
 		returns (Probabilities[] memory probabilities)
 	{
@@ -20,11 +20,11 @@ library TrainingData {
 		probabilities[2] = getProbabilities([uint16(65), 115, 210, 360]);
 	}
 
-	function getDurations() public pure returns (uint32[] memory durations) {
+	function getDurations() internal pure returns (uint32[] memory durations) {
 		return ToDynamicUtils.toDynamic([uint32(86400), 259200, 604800]);
 	}
 
-	function getShares() public pure returns (uint8[] memory shares) {
+	function getShares() internal pure returns (uint8[] memory shares) {
 		return ToDynamicUtils.toDynamic([40, 30, 20, 10]);
 	}
 

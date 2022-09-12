@@ -5,7 +5,7 @@ pragma solidity ^0.8.15;
 import { Chest } from 'src/Chests.sol';
 
 library ChestsData {
-	function getChests() public pure returns (Chest[] memory chests) {
+	function getChests() internal pure returns (Chest[] memory chests) {
 		chests = new Chest[](4);
 		chests[0] = Chest(0, 1000, 30e18);
 		chests[1] = Chest(0, 650, 60e18);
