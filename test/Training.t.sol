@@ -13,6 +13,10 @@ import { TrainingData } from 'script/data/TrainingData.sol';
 import { AuthorityData } from 'script/data/AuthorityData.sol';
 
 contract TrainingTest is Test {
+	event Transfer(address indexed from, address indexed to, uint256 amount);
+	event TrainStart(uint256 indexed id, Durations time, uint64 end);
+	event TrainEnd(uint256 indexed id, uint256 minted);
+
 	Characters characters;
 	Powder powder;
 	Training training;
@@ -45,6 +49,9 @@ contract TrainingTest is Test {
 
 	function testCanTrain() public {
 		characters.mint(address(this), 0, Rarities.Normal);
+
+		vm.expectEmit(true, true, true, true, address(training));
+		emit TrainStart(0, Durations.ThreeDays, uint64(block.timestamp + 3 days));
 		training.train(0, Durations.ThreeDays);
 
 		(uint256 end, Durations time) = training.sessions(0);
@@ -96,7 +103,34 @@ contract TrainingTest is Test {
 
 		// Warp to one day later
 		vm.warp(block.timestamp + 86400);
+
+		// Check that a TrainEnd event is emitted
+		vm.recordLogs();
+		uint256 snapshot = vm.snapshot();
+		vm.expectEmit(true, true, true, false, address(training));
+		emit TrainEnd(0, 0);
+		vm.recordLogs();
 		training.endTrain(0);
+		Vm.Log[] memory logs = vm.getRecordedLogs();
+
+		// Get minted amount from logs
+		uint64 minted;
+		for (uint256 i = 0; i < logs.length; i++) {
+			if (logs[i].topics[0] == TrainEnd.selector) {
+				minted = abi.decode(logs[i].data, (uint64));
+				break;
+			}
+		}
+
+		// Check that powder was minted
+		vm.revertTo(snapshot);
+		snapshot = vm.snapshot();
+		vm.expectEmit(true, true, true, true, address(powder));
+		emit Transfer(address(0), address(this), minted);
+		training.endTrain(0);
+
+		// Make sure that the minted amount is accurate
+		assertTrue(minted == 20 || minted == 30 || minted == 50 || minted == 80);
 	}
 
 	function testCannotEndTrainingBeforeEarly() public {

@@ -25,6 +25,9 @@ contract Training is Randomness {
 	Probabilities[] public probabilities;
 	uint32[] public durations;
 
+	event TrainStart(uint256 indexed id, Durations time, uint64 end);
+	event TrainEnd(uint256 indexed id, uint256 minted);
+
 	constructor(
 		Characters _characters,
 		MintableBEP20 _powder,
@@ -52,10 +55,10 @@ contract Training is Randomness {
 		require(sessions[id].end == 0, 'ALREADY_TRAINING');
 		require(characters.ownerOf(id) == msg.sender, 'UNAUTHORIZED');
 
-		sessions[id] = Session({
-			end: uint64(block.timestamp) + duration,
-			time: time
-		});
+		uint64 end = uint64(block.timestamp) + duration;
+		sessions[id] = Session({ end: end, time: time });
+
+		emit TrainStart(id, time, end);
 	}
 
 	function endTrain(uint256 id) public {
@@ -64,9 +67,14 @@ contract Training is Randomness {
 		require(block.timestamp >= training.end, 'NOT_DONE');
 		require(characters.ownerOf(id) == msg.sender, 'UNAUTHORIZED');
 
+		// Get minted amount
+		uint256 minted = getRandomUint(probabilities[uint8(training.time)]);
+
 		// More gas efficient than `delete sessions[id]`
 		training.end = 0;
 
-		powder.mint(msg.sender, getRandomUint(probabilities[uint8(training.time)]));
+		// Mint and emit event
+		powder.mint(msg.sender, minted);
+		emit TrainEnd(id, minted);
 	}
 }
