@@ -9,6 +9,7 @@ import { VRFCoordinatorV2Mock } from 'chainlink/mocks/VRFCoordinatorV2Mock.sol';
 import { ERC20 } from 'solmate/tokens/ERC20.sol';
 import { ERC1155 } from 'solmate/tokens/ERC1155.sol';
 import { Authority } from 'solmate/auth/Auth.sol';
+import { LibString } from 'solmate/utils/LibString.sol';
 
 // Custom
 import { Chests, Chest } from 'src/Chests.sol';
@@ -78,7 +79,8 @@ contract OpenChestsTest is Test {
 			address(this),
 			authority,
 			BurnableBEP20(address(stones)),
-			CharactersData.getLevelCosts()
+			CharactersData.getLevelCosts(),
+			''
 		);
 
 		// Mint config
@@ -116,7 +118,8 @@ contract OpenChestsTest is Test {
 			authority,
 			chainlinkConfig,
 			mintConfig,
-			OpenChestsData.getConfigs()
+			OpenChestsData.getConfigs(),
+			'http://example.com/open-chests/'
 		);
 
 		// Set roles
@@ -211,5 +214,28 @@ contract OpenChestsTest is Test {
 		for (uint256 requestId = 1; requestId <= 20; requestId++) {
 			coordinator.fulfillRandomWords(requestId, address(chests));
 		}
+	}
+
+	function testTokenUri() public {
+		address user = address(42);
+
+		string memory uri0 = 'http://example.com/open-chests/0.json';
+		string memory uri1 = 'http://example.com/open-chests/1.json';
+		string memory uri2 = 'http://example.com/open-chests/2.json';
+		string memory uri3 = 'http://example.com/open-chests/3.json';
+
+		chests.mint(user, 0);
+		chests.mint(user, 0);
+		chests.mint(user, 1);
+		chests.mint(user, 1);
+		chests.mint(user, 2);
+		chests.mint(user, 3);
+
+		assertEq(chests.tokenURI(1), uri0);
+		assertEq(chests.tokenURI(2), uri0);
+		assertEq(chests.tokenURI(3), uri1);
+		assertEq(chests.tokenURI(4), uri1);
+		assertEq(chests.tokenURI(5), uri2);
+		assertEq(chests.tokenURI(6), uri3);
 	}
 }

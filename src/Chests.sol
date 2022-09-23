@@ -26,11 +26,15 @@ contract Chests is ERC1155 {
 	address public beneficiary;
 	IOpenChests public openChests;
 
+	// ERC1155 config
+	string private _uri;
+
 	constructor(
 		ERC20 _currency,
 		address _beneficiary,
 		IOpenChests _openChests,
 		Chest[] memory _chests,
+		string memory __uri,
 		address batchMintTo,
 		uint256[] memory batchMintIds,
 		uint256[] memory batchMintAmounts
@@ -42,6 +46,9 @@ contract Chests is ERC1155 {
 
 		// Chest config
 		setChests(_chests);
+
+		// ERC1155 config
+		_uri = __uri;
 
 		// Initial batch mint
 		if (batchMintTo != address(0)) {
@@ -60,7 +67,7 @@ contract Chests is ERC1155 {
 	}
 
 	function uri(uint256) public view virtual override returns (string memory) {
-		return '';
+		return _uri;
 	}
 
 	function mint(uint256 id, uint16 amount) public {

@@ -8,6 +8,7 @@ import { VRFConsumerBaseV2 } from 'chainlink/VRFConsumerBaseV2.sol';
 // Solmate
 import { Auth, Authority } from 'solmate/auth/Auth.sol';
 import { ERC721 } from 'solmate/tokens/ERC721.sol';
+import { LibString } from 'solmate/utils/LibString.sol';
 
 // Custom
 import { Probabilities, ProbabilitiesLib } from './lib/ProbabilitiesLib.sol';
@@ -67,6 +68,9 @@ contract OpenChests is IOpenChests, ERC721, VRFConsumerBaseV2, Auth {
 	// Chest config
 	mapping(uint256 => mapping(Settings => Probabilities)) public probabilities;
 
+	// ERC721 config
+	string private baseUri;
+
 	constructor(
 		string memory _name,
 		string memory _symbol,
@@ -74,7 +78,8 @@ contract OpenChests is IOpenChests, ERC721, VRFConsumerBaseV2, Auth {
 		Authority _authority,
 		ChainlinkConfig memory _chainlinkConfig,
 		MintConfig memory _mintConfig,
-		ChestConfigs[] memory _configs
+		ChestConfigs[] memory _configs,
+		string memory _baseUri
 	)
 		ERC721(_name, _symbol)
 		Auth(_owner, _authority)
@@ -82,6 +87,7 @@ contract OpenChests is IOpenChests, ERC721, VRFConsumerBaseV2, Auth {
 	{
 		chainlinkConfig = _chainlinkConfig;
 		mintConfig = _mintConfig;
+		baseUri = _baseUri;
 		setConfigs(_configs);
 	}
 
@@ -177,10 +183,14 @@ contract OpenChests is IOpenChests, ERC721, VRFConsumerBaseV2, Auth {
 	}
 
 	// ERC721
-	function tokenURI(
-		uint256 /*id*/
-	) public view virtual override returns (string memory) {
-		return '';
+	function tokenURI(uint256 id)
+		public
+		view
+		virtual
+		override
+		returns (string memory)
+	{
+		return string.concat(baseUri, LibString.toString(chests[id]), '.json');
 	}
 
 	// Chainlink

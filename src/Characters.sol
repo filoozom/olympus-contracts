@@ -7,6 +7,7 @@ import { ERC721 } from 'solmate/tokens/ERC721.sol';
 import { ERC1155 } from 'solmate/tokens/ERC1155.sol';
 import { SafeTransferLib } from 'solmate/utils/SafeTransferLib.sol';
 import { Auth, Authority } from 'solmate/auth/Auth.sol';
+import { LibString } from 'solmate/utils/LibString.sol';
 
 // Custom
 import { BurnableBEP20 } from './lib/BurnableBEP20.sol';
@@ -45,16 +46,21 @@ contract Characters is ERC721, Auth {
 	Character[] public characters;
 	uint8[] public levelCosts;
 
+	// ERC721 config
+	string private baseUri;
+
 	constructor(
 		string memory _name,
 		string memory _symbol,
 		address _owner,
 		Authority _authority,
 		BurnableBEP20 _stones,
-		uint8[] memory _levelCosts
+		uint8[] memory _levelCosts,
+		string memory _baseUri
 	) ERC721(_name, _symbol) Auth(_owner, _authority) {
 		stones = _stones;
 		levelCosts = _levelCosts;
+		baseUri = _baseUri;
 	}
 
 	function mint(
@@ -107,9 +113,22 @@ contract Characters is ERC721, Auth {
 	}
 
 	// ERC721
-	function tokenURI(
-		uint256 /*id*/
-	) public view virtual override returns (string memory) {
-		return '';
+	function tokenURI(uint256 id)
+		public
+		view
+		virtual
+		override
+		returns (string memory)
+	{
+		Character storage character = characters[id];
+
+		return
+			string.concat(
+				baseUri,
+				LibString.toString(character.id),
+				'/',
+				LibString.toString(uint256(character.rarity)),
+				'.json'
+			);
 	}
 }

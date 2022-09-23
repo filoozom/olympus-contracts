@@ -28,7 +28,8 @@ contract TrainingTest is Test {
 			address(this),
 			AuthorityData.getNull(),
 			Stones(address(0)),
-			new uint8[](0)
+			new uint8[](0),
+			''
 		);
 		powder = new Powder(
 			'Powder',

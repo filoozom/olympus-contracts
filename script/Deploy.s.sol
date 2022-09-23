@@ -69,6 +69,11 @@ contract DeployScript is Script, AuthorityUtils {
 	uint256[] preMintIds = ToDynamicUtils.toDynamic([0]);
 	uint256[] preMintAmounts = ToDynamicUtils.toDynamic([150]);
 
+	// NFT config
+	string chestsUri = 'https://nftimages.olympus.game/chests/{id}.json';
+	string openChestsBaseUri = 'https://nftimages.olympus.game/open-chests/';
+	string charactersBaseUri = 'https://nftimages.olympus.game/characters/';
+
 	/* Production */
 	// Currency
 	ERC20 currency = ERC20(address(0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56));
@@ -194,7 +199,8 @@ contract DeployScript is Script, AuthorityUtils {
 				owner,
 				authority,
 				stones,
-				CharactersData.getLevelCosts()
+				CharactersData.getLevelCosts(),
+				charactersBaseUri
 			);
 	}
 
@@ -205,6 +211,7 @@ contract DeployScript is Script, AuthorityUtils {
 				beneficiary,
 				openChests,
 				ChestsData.getChests(),
+				chestsUri,
 				preMintTo,
 				preMintIds,
 				preMintAmounts
@@ -241,7 +248,8 @@ contract DeployScript is Script, AuthorityUtils {
 				authority,
 				chainlinkConfig,
 				mintConfig,
-				OpenChestsData.getConfigs()
+				OpenChestsData.getConfigs(),
+				openChestsBaseUri
 			);
 	}
 

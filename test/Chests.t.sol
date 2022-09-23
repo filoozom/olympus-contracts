@@ -48,6 +48,7 @@ contract ChestsTest is Test {
 			recipient,
 			openChests,
 			ChestsData.getChests(),
+			'http://example.com/chests/{id}.json',
 			address(0),
 			empty,
 			empty
@@ -263,6 +264,13 @@ contract ChestsTest is Test {
 			}
 		}
 	}
+
+	function testUri() public {
+		assertEq(chests.uri(0), 'http://example.com/chests/{id}.json');
+		assertEq(chests.uri(1), 'http://example.com/chests/{id}.json');
+		assertEq(chests.uri(2), 'http://example.com/chests/{id}.json');
+		assertEq(chests.uri(3), 'http://example.com/chests/{id}.json');
+	}
 }
 
 contract ChestsPreMintTest is Test {
@@ -291,6 +299,7 @@ contract ChestsPreMintTest is Test {
 			recipient,
 			openChests,
 			ChestsData.getChests(),
+			'',
 			preMintTo,
 			ToDynamicUtils.toDynamic([uint256(0)]),
 			ToDynamicUtils.toDynamic([uint256(150)])
@@ -325,6 +334,7 @@ contract ChestsPreMintTest is Test {
 			recipient,
 			openChests,
 			ChestsData.getChests(),
+			'',
 			address(0),
 			empty,
 			empty

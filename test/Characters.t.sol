@@ -40,7 +40,8 @@ contract CharactersTest is Test {
 			address(this),
 			AuthorityData.getNull(),
 			Stones(address(stones)),
-			CharactersData.getLevelCosts()
+			CharactersData.getLevelCosts(),
+			'http://example.com/characters/'
 		);
 	}
 
@@ -208,5 +209,41 @@ contract CharactersTest is Test {
 	function testCannotSetNicknameOfUnknownCharacter() public {
 		vm.expectRevert('UNAUTHORIZED');
 		characters.setNickname(0, 'filoozom');
+	}
+
+	function testTokenUri() public {
+		address user = address(42);
+
+		string memory uri10 = 'http://example.com/characters/1/0.json';
+		string memory uri11 = 'http://example.com/characters/1/1.json';
+		string memory uri12 = 'http://example.com/characters/1/2.json';
+
+		string memory uri30 = 'http://example.com/characters/3/0.json';
+		string memory uri31 = 'http://example.com/characters/3/1.json';
+		string memory uri32 = 'http://example.com/characters/3/2.json';
+
+		characters.mint(user, 1, Rarities.Diamond);
+		characters.mint(user, 1, Rarities.Normal);
+		characters.mint(user, 1, Rarities.Gold);
+		characters.mint(user, 1, Rarities.Diamond);
+		characters.mint(user, 1, Rarities.Diamond);
+
+		characters.mint(user, 3, Rarities.Gold);
+		characters.mint(user, 3, Rarities.Gold);
+		characters.mint(user, 3, Rarities.Normal);
+		characters.mint(user, 3, Rarities.Diamond);
+		characters.mint(user, 3, Rarities.Normal);
+
+		assertEq(characters.tokenURI(0), uri12);
+		assertEq(characters.tokenURI(1), uri10);
+		assertEq(characters.tokenURI(2), uri11);
+		assertEq(characters.tokenURI(3), uri12);
+		assertEq(characters.tokenURI(4), uri12);
+
+		assertEq(characters.tokenURI(5), uri31);
+		assertEq(characters.tokenURI(6), uri31);
+		assertEq(characters.tokenURI(7), uri30);
+		assertEq(characters.tokenURI(8), uri32);
+		assertEq(characters.tokenURI(9), uri30);
 	}
 }
