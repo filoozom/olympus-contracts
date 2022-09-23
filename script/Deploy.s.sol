@@ -12,6 +12,7 @@ import { Authority } from 'solmate/auth/Auth.sol';
 
 // Lib
 import { AuthorityUtils } from './lib/AuthorityUtils.sol';
+import { ToDynamicUtils } from './lib/ToDynamicUtils.sol';
 
 // Mocks
 import { Currency } from './mocks/Currency.sol';
@@ -62,6 +63,11 @@ contract DeployScript is Script, AuthorityUtils {
 	// Furnace
 	uint16 furnaceCost = 100;
 	uint32 furnaceDuration = 8 hours;
+
+	// Chests pre-mint
+	address preMintTo = address(0x49d6298289f051E4F171B31d24D11fE64bBfEfA7);
+	uint256[] preMintIds = ToDynamicUtils.toDynamic([0]);
+	uint256[] preMintAmounts = ToDynamicUtils.toDynamic([150]);
 
 	/* Production */
 	// Currency
@@ -194,7 +200,15 @@ contract DeployScript is Script, AuthorityUtils {
 
 	function deployChests(OpenChests openChests) private returns (Chests) {
 		return
-			new Chests(currency, beneficiary, openChests, ChestsData.getChests());
+			new Chests(
+				currency,
+				beneficiary,
+				openChests,
+				ChestsData.getChests(),
+				preMintTo,
+				preMintIds,
+				preMintAmounts
+			);
 	}
 
 	function deployFurnace(Powder powder, Stones stones)

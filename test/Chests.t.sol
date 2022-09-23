@@ -40,12 +40,17 @@ contract ChestsTest is Test {
 		currency = new ERC20Mock('USD', 'BUSD');
 		openChests = new OpenChestsMock();
 
+		uint256[] memory empty = new uint256[](0);
+
 		// Chests
 		chests = new Chests(
 			currency,
 			recipient,
 			openChests,
-			ChestsData.getChests()
+			ChestsData.getChests(),
+			address(0),
+			empty,
+			empty
 		);
 	}
 
@@ -104,15 +109,15 @@ contract ChestsTest is Test {
 
 		// Mint too many chests
 		vm.expectRevert('NOT_ENOUGH_LEFT');
-		chests.mint(0, 1001);
+		chests.mint(0, 1151);
 
 		// Mint all chests and then try to mint one more
-		chests.mint(0, 1000);
+		chests.mint(0, 1150);
 		vm.expectRevert('NOT_ENOUGH_LEFT');
 		chests.mint(0, 1);
 
 		// Make sure that there are actually 1000 minted chests
-		assertEq(getChest(0).minted, 1000);
+		assertEq(getChest(0).minted, 1150);
 	}
 
 	function testCanBatchBuyChest() public {
@@ -183,13 +188,13 @@ contract ChestsTest is Test {
 
 		// Mint too many chests
 		ids = ToDynamicUtils.toDynamic([uint256(0)]);
-		amounts = ToDynamicUtils.toDynamic([uint256(1001)]);
+		amounts = ToDynamicUtils.toDynamic([uint256(1151)]);
 		vm.expectRevert('NOT_ENOUGH_LEFT');
 		chests.batchMint(ids, amounts);
 
 		// Mint all chests and then try to mint one more
 		ids = ToDynamicUtils.toDynamic([uint256(0)]);
-		amounts = ToDynamicUtils.toDynamic([uint256(1000)]);
+		amounts = ToDynamicUtils.toDynamic([uint256(1150)]);
 		chests.batchMint(ids, amounts);
 
 		// Mint one more chest than available
@@ -199,7 +204,7 @@ contract ChestsTest is Test {
 		chests.batchMint(ids, amounts);
 
 		// Make sure that there are actually 1000 minted chests
-		assertEq(getChest(0).minted, 1000);
+		assertEq(getChest(0).minted, 1150);
 
 		// Mint the same chest multiple times in one batch
 		ids = ToDynamicUtils.toDynamic([uint256(1), 1, 1, 1]);
@@ -257,5 +262,91 @@ contract ChestsTest is Test {
 				chests.open(chest);
 			}
 		}
+	}
+}
+
+contract ChestsPreMintTest is Test {
+	ERC20Mock currency;
+	IOpenChests openChests;
+	Chests chests;
+
+	Authority authority = Authority(address(0));
+	address recipient = address(99);
+
+	function getChest(uint256 id) private view returns (Chest memory chest) {
+		(uint16 minted, uint16 max, uint224 price) = chests.chests(id);
+		chest = Chest(minted, max, price);
+	}
+
+	function setUp() public {
+		// Dependencies
+		currency = new ERC20Mock('USD', 'BUSD');
+		openChests = new OpenChestsMock();
+	}
+
+	function testCanPreMint() public {
+		address preMintTo = address(0x123);
+		chests = new Chests(
+			currency,
+			recipient,
+			openChests,
+			ChestsData.getChests(),
+			preMintTo,
+			ToDynamicUtils.toDynamic([uint256(0)]),
+			ToDynamicUtils.toDynamic([uint256(150)])
+		);
+
+		// Make sure the recipient didn't get any currency
+		assertEq(currency.balanceOf(recipient), 0);
+
+		// Check chest 0
+		assertEq(getChest(0).minted, 150);
+		assertEq(chests.balanceOf(preMintTo, 0), 150);
+
+		// Check chest 1
+		assertEq(getChest(1).minted, 0);
+		assertEq(chests.balanceOf(preMintTo, 1), 0);
+
+		// Check chest 2
+		assertEq(getChest(2).minted, 0);
+		assertEq(chests.balanceOf(preMintTo, 2), 0);
+
+		// Check chest 3
+		assertEq(getChest(3).minted, 0);
+		assertEq(chests.balanceOf(preMintTo, 3), 0);
+	}
+
+	function testCanPreMintNoChest() public {
+		address zero = address(0);
+		uint256[] memory empty = new uint256[](0);
+
+		chests = new Chests(
+			currency,
+			recipient,
+			openChests,
+			ChestsData.getChests(),
+			address(0),
+			empty,
+			empty
+		);
+
+		// Make sure the recipient didn't get any currency
+		assertEq(currency.balanceOf(recipient), 0);
+
+		// Check chest 0
+		assertEq(getChest(0).minted, 0);
+		assertEq(chests.balanceOf(zero, 0), 0);
+
+		// Check chest 1
+		assertEq(getChest(1).minted, 0);
+		assertEq(chests.balanceOf(zero, 1), 0);
+
+		// Check chest 2
+		assertEq(getChest(2).minted, 0);
+		assertEq(chests.balanceOf(zero, 2), 0);
+
+		// Check chest 3
+		assertEq(getChest(3).minted, 0);
+		assertEq(chests.balanceOf(zero, 3), 0);
 	}
 }

@@ -30,7 +30,10 @@ contract Chests is ERC1155 {
 		ERC20 _currency,
 		address _beneficiary,
 		IOpenChests _openChests,
-		Chest[] memory _chests
+		Chest[] memory _chests,
+		address batchMintTo,
+		uint256[] memory batchMintIds,
+		uint256[] memory batchMintAmounts
 	) {
 		// Minting configuration
 		currency = _currency;
@@ -39,6 +42,11 @@ contract Chests is ERC1155 {
 
 		// Chest config
 		setChests(_chests);
+
+		// Initial batch mint
+		if (batchMintTo != address(0)) {
+			batchMint(batchMintTo, batchMintIds, batchMintAmounts, true);
+		}
 	}
 
 	function setChests(Chest[] memory _chests) private {
@@ -75,6 +83,15 @@ contract Chests is ERC1155 {
 	function batchMint(uint256[] calldata ids, uint256[] calldata amounts)
 		public
 	{
+		batchMint(msg.sender, ids, amounts, false);
+	}
+
+	function batchMint(
+		address to,
+		uint256[] memory ids,
+		uint256[] memory amounts,
+		bool free
+	) private {
 		require(ids.length == amounts.length, 'LENGTH_MISMATCH');
 		uint256 price;
 
@@ -100,8 +117,11 @@ contract Chests is ERC1155 {
 			}
 		}
 
-		SafeTransferLib.safeTransferFrom(currency, msg.sender, beneficiary, price);
-		_batchMint(msg.sender, ids, amounts, '');
+		if (!free) {
+			SafeTransferLib.safeTransferFrom(currency, to, beneficiary, price);
+		}
+
+		_batchMint(to, ids, amounts, '');
 	}
 
 	function open(uint256 id) public {
