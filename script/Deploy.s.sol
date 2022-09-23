@@ -36,37 +36,36 @@ import { Training } from 'src/Training.sol';
 
 contract DeployScript is Script, AuthorityUtils {
 	// Owner and beneficiary
-	address constant beneficiary = address(0x1);
+	address constant beneficiary =
+		address(0x11632134F596C26ee0775Df3c807c1cC33E22eF0);
 
 	// Characters
-	string charactersName = 'Characters';
-	string charactersSymbol = 'CHAR';
+	string charactersName = 'Olympus Game - Characters';
+	string charactersSymbol = 'OLYMPC';
 
 	// Olymp
-	string olympName = 'Olymp';
-	string olympSymbol = 'OL';
+	string olympName = 'Olympus Game - bOlymp';
+	string olympSymbol = 'bOLYMP';
 
 	// OpenChests
-	string openChestsName = 'OpenChests';
-	string openChestsSymbol = 'OPN';
+	string openChestsName = 'Olympus Game - Open Chests';
+	string openChestsSymbol = 'OLYMPOC';
 
 	// Powder
-	string powderName = 'Powder';
-	string powderSymbol = 'POW';
+	string powderName = 'Olympus Game - Evolving Powder';
+	string powderSymbol = 'OLYMPP';
 
 	// Stones
-	string stonesName = 'Stones';
-	string stonesSymbol = 'STON';
+	string stonesName = 'Olympus Game - Evolving Stones';
+	string stonesSymbol = 'OLYMPS';
 
 	// Furnace
 	uint16 furnaceCost = 100;
 	uint32 furnaceDuration = 8 hours;
 
 	/* Production */
-	/*
 	// Currency
-	ERC20 constant currency =
-		address(0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56);
+	ERC20 currency = ERC20(address(0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56));
 
 	// OpenChests
 	ChainlinkConfig chainlinkConfig =
@@ -77,13 +76,14 @@ contract DeployScript is Script, AuthorityUtils {
 			callbackGasLimit: 500000,
 			requestConfirmations: 3,
 			keyHash: 0x114f3da0a805b6a67d6e9cd2ec746f7028f1b7376365af575cfea3550dd1aa04,
-			subscriptionId: 0
+			subscriptionId: 466
 		});
-	*/
 
 	/* Testnet */
+	/*
 	// Currency
 	ERC20 currency;
+	*/
 
 	/* BSC Testnet */
 	/*
@@ -101,6 +101,7 @@ contract DeployScript is Script, AuthorityUtils {
 	*/
 
 	/* Goerli Testnet */
+	/*
 	// OpenChests
 	ChainlinkConfig chainlinkConfig =
 		ChainlinkConfig({
@@ -112,6 +113,7 @@ contract DeployScript is Script, AuthorityUtils {
 			keyHash: 0x79d3d8832d904592c0bf9818b621522c988bb8b0c05cdc3b15aea1b6e8db0c15,
 			subscriptionId: 632
 		});
+	*/
 
 	function setUp() public {
 		owner = msg.sender;
