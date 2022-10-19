@@ -25,6 +25,20 @@ contract MarketplaceTest is Test {
 	address seller = address(1);
 	address buyer = address(2);
 
+	event ItemListed(
+		address indexed token,
+		uint256 indexed id,
+		uint256 indexed listingId,
+		address owner,
+		uint256 amount,
+		uint256 price
+	);
+	event ItemCancelled(uint256 indexed id);
+	event ItemBought(uint256 indexed id);
+
+	event AllowToken(address indexed token, Types nftType);
+	event SetCurrency(ERC20 currency);
+
 	function setUp() public {
 		// Tokens
 		erc20 = new ERC20Mock('ERC20', 'ERC20');
@@ -61,8 +75,16 @@ contract MarketplaceTest is Test {
 	}
 
 	function testCanAllowTokens() public {
+		vm.expectEmit(true, true, true, true);
+		emit AllowToken(address(erc20), Types.ERC20);
 		marketplace.allowToken(address(erc20), Types.ERC20);
+
+		vm.expectEmit(true, true, true, true);
+		emit AllowToken(address(erc721), Types.ERC721);
 		marketplace.allowToken(address(erc721), Types.ERC721);
+
+		vm.expectEmit(true, true, true, true);
+		emit AllowToken(address(erc1155), Types.ERC1155);
 		marketplace.allowToken(address(erc1155), Types.ERC1155);
 
 		assertEq(marketplace.allowedTokens(address(erc20)), Types.ERC20);
@@ -80,6 +102,9 @@ contract MarketplaceTest is Test {
 
 		vm.startPrank(seller);
 		erc20.approve(address(marketplace), 50);
+
+		vm.expectEmit(true, true, true, true);
+		emit ItemListed(address(erc20), 0, 0, seller, 50, 500);
 		marketplace.listERC20(address(erc20), 50, 500);
 	}
 
@@ -131,6 +156,8 @@ contract MarketplaceTest is Test {
 		marketplace.cancelERC1155(0);
 
 		// Right cancel
+		vm.expectEmit(true, true, true, true);
+		emit ItemCancelled(0);
 		marketplace.cancelERC20(0);
 
 		// Make sure the seller got their NFTs back
@@ -154,6 +181,9 @@ contract MarketplaceTest is Test {
 		// Buy the tokens
 		vm.startPrank(buyer);
 		currency.approve(address(marketplace), 75);
+
+		vm.expectEmit(true, true, true, true);
+		emit ItemBought(0);
 		marketplace.buyERC20(0);
 		vm.stopPrank();
 
@@ -170,6 +200,9 @@ contract MarketplaceTest is Test {
 
 		vm.startPrank(seller);
 		erc721.approve(address(marketplace), 0);
+
+		vm.expectEmit(true, true, true, true);
+		emit ItemListed(address(erc721), 0, 0, seller, 1, 50);
 		marketplace.listERC721(address(erc721), 0, 50);
 	}
 
@@ -221,6 +254,8 @@ contract MarketplaceTest is Test {
 		marketplace.cancelERC1155(0);
 
 		// Right cancel
+		vm.expectEmit(true, true, true, true);
+		emit ItemCancelled(0);
 		marketplace.cancelERC721(0);
 
 		// Make sure the seller got their NFTs back
@@ -244,6 +279,9 @@ contract MarketplaceTest is Test {
 		// Buy the tokens
 		vm.startPrank(buyer);
 		currency.approve(address(marketplace), 75);
+
+		vm.expectEmit(true, true, true, true);
+		emit ItemBought(0);
 		marketplace.buyERC721(0);
 		vm.stopPrank();
 
@@ -259,6 +297,9 @@ contract MarketplaceTest is Test {
 
 		vm.startPrank(seller);
 		erc1155.setApprovalForAll(address(marketplace), true);
+
+		vm.expectEmit(true, true, true, true);
+		emit ItemListed(address(erc1155), 0, 0, seller, 5, 50);
 		marketplace.listERC1155(address(erc1155), 0, 5, 50);
 	}
 
@@ -310,6 +351,8 @@ contract MarketplaceTest is Test {
 		marketplace.cancelERC721(0);
 
 		// Right cancel
+		vm.expectEmit(true, true, true, true);
+		emit ItemCancelled(0);
 		marketplace.cancelERC1155(0);
 
 		// Make sure the seller got their NFTs back
@@ -333,6 +376,9 @@ contract MarketplaceTest is Test {
 		// Buy the tokens
 		vm.startPrank(buyer);
 		currency.approve(address(marketplace), 75);
+
+		vm.expectEmit(true, true, true, true);
+		emit ItemBought(0);
 		marketplace.buyERC1155(0);
 		vm.stopPrank();
 

@@ -29,6 +29,20 @@ contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
 	mapping(uint256 => Listing) public listings;
 	uint256 private listingCount = 0;
 
+	event ItemListed(
+		address indexed token,
+		uint256 indexed id,
+		uint256 indexed listingId,
+		address owner,
+		uint256 amount,
+		uint256 price
+	);
+	event ItemCancelled(uint256 indexed id);
+	event ItemBought(uint256 indexed id);
+
+	event AllowToken(address indexed token, Types nftType);
+	event SetCurrency(ERC20 currency);
+
 	constructor(
 		ERC20 _currency,
 		address _owner,
@@ -89,6 +103,7 @@ contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
 		);
 
 		delete listings[id];
+		emit ItemCancelled(id);
 	}
 
 	function cancelERC721(uint256 id) public {
@@ -103,6 +118,7 @@ contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
 		);
 
 		delete listings[id];
+		emit ItemCancelled(id);
 	}
 
 	function cancelERC1155(uint256 id) public {
@@ -119,6 +135,7 @@ contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
 		);
 
 		delete listings[id];
+		emit ItemCancelled(id);
 	}
 
 	function buyERC20(uint256 id) public {
@@ -138,6 +155,7 @@ contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
 		);
 
 		delete listings[id];
+		emit ItemBought(id);
 	}
 
 	function buyERC721(uint256 id) public {
@@ -157,6 +175,7 @@ contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
 		);
 
 		delete listings[id];
+		emit ItemBought(id);
 	}
 
 	function buyERC1155(uint256 id) public {
@@ -178,15 +197,18 @@ contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
 		);
 
 		delete listings[id];
+		emit ItemBought(id);
 	}
 
 	// Admin
 	function allowToken(address token, Types nftType) public requiresAuth {
 		allowedTokens[token] = nftType;
+		emit AllowToken(token, nftType);
 	}
 
 	function setCurrency(ERC20 _currency) public requiresAuth {
 		currency = _currency;
+		emit SetCurrency(currency);
 	}
 
 	// Private
@@ -196,6 +218,7 @@ contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
 		uint256 amount,
 		uint256 price
 	) public {
+		emit ItemListed(token, id, listingCount, msg.sender, amount, price);
 		listings[listingCount] = Listing({
 			owner: msg.sender,
 			token: token,
