@@ -2,6 +2,7 @@
 pragma solidity ^0.8.15;
 
 // Solmate
+import { Auth, Authority } from 'solmate/auth/Auth.sol';
 import { ERC20 } from 'solmate/tokens/ERC20.sol';
 import { ERC1155, ERC1155TokenReceiver } from 'solmate/tokens/ERC1155.sol';
 import { SafeTransferLib } from 'solmate/utils/SafeTransferLib.sol';
@@ -15,7 +16,7 @@ struct Chest {
 	uint224 price;
 }
 
-contract Chests is ERC1155 {
+contract Chests is ERC1155, Auth {
 	event ChestOpened(address indexed owner, uint256 indexed id);
 
 	// Chest config
@@ -25,38 +26,35 @@ contract Chests is ERC1155 {
 	ERC20 public currency;
 	address public beneficiary;
 	IOpenChests public openChests;
+	uint256 endTimestamp;
 
 	// ERC1155 config
 	string private _uri;
 
 	constructor(
+		address _owner,
+		Authority _authority,
 		ERC20 _currency,
 		address _beneficiary,
 		IOpenChests _openChests,
 		Chest[] memory _chests,
 		string memory __uri,
-		address batchMintTo,
-		uint256[] memory batchMintIds,
-		uint256[] memory batchMintAmounts
-	) {
+		uint256 _endTimestamp
+	) Auth(_owner, _authority) {
 		// Minting configuration
 		currency = _currency;
 		beneficiary = _beneficiary;
 		openChests = _openChests;
+		endTimestamp = _endTimestamp;
 
 		// Chest config
 		setChests(_chests);
 
 		// ERC1155 config
 		_uri = __uri;
-
-		// Initial batch mint
-		if (batchMintTo != address(0)) {
-			batchMint(batchMintTo, batchMintIds, batchMintAmounts, true);
-		}
 	}
 
-	function setChests(Chest[] memory _chests) private {
+	function setChests(Chest[] memory _chests) public requiresAuth {
 		uint256 length = _chests.length;
 		for (uint256 i = 0; i < length; ) {
 			chests.push(_chests[i]);
@@ -71,6 +69,8 @@ contract Chests is ERC1155 {
 	}
 
 	function mint(uint256 id, uint16 amount) public {
+		require(block.timestamp < endTimestamp, 'MINTING_OVER');
+
 		Chest storage chest = chests[id];
 		unchecked {
 			// max - minted can never be < 0
@@ -91,6 +91,14 @@ contract Chests is ERC1155 {
 		public
 	{
 		batchMint(msg.sender, ids, amounts, false);
+	}
+
+	function batchMintFree(
+		address to,
+		uint256[] memory ids,
+		uint256[] memory amounts
+	) public requiresAuth {
+		batchMint(to, ids, amounts, true);
 	}
 
 	function batchMint(

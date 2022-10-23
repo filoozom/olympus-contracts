@@ -14,6 +14,7 @@ import { ERC20Mock } from './mocks/ERC20Mock.sol';
 import { OpenChestsMock } from './mocks/OpenChestsMock.sol';
 
 // Data
+import { AuthorityData } from 'script/data/AuthorityData.sol';
 import { ChestsData } from 'script/data/ChestsData.sol';
 
 // Lib
@@ -29,6 +30,7 @@ contract ChestsTest is Test {
 
 	Authority authority = Authority(address(0));
 	address recipient = address(99);
+	uint256 endTimestamp = block.timestamp + 1 hours;
 
 	function getChest(uint256 id) private view returns (Chest memory chest) {
 		(uint16 minted, uint16 max, uint224 price) = chests.chests(id);
@@ -40,18 +42,16 @@ contract ChestsTest is Test {
 		currency = new ERC20Mock('USD', 'BUSD');
 		openChests = new OpenChestsMock();
 
-		uint256[] memory empty = new uint256[](0);
-
 		// Chests
 		chests = new Chests(
+			address(this),
+			AuthorityData.getNull(),
 			currency,
 			recipient,
 			openChests,
 			ChestsData.getChests(),
 			'http://example.com/chests/{id}.json',
-			address(0),
-			empty,
-			empty
+			endTimestamp
 		);
 	}
 
@@ -76,6 +76,22 @@ contract ChestsTest is Test {
 		assertEq(currency.balanceOf(recipient), price);
 		assertEq(currency.balanceOf(user), 1e64 - price);
 		assertEq(chests.balanceOf(user, 2), 6);
+	}
+
+	function testCannotBuyChestAfterEndDate() public {
+		address user = address(1);
+
+		// Prank EOA so we don't have to implement ERC1155TokenReceiver
+		currency.mint(user, 1e64);
+		vm.startPrank(user);
+
+		// Mint and approve currency
+		currency.approve(address(chests), 1e64);
+
+		// Mint 1 rare chest
+		vm.warp(endTimestamp);
+		vm.expectRevert('MINTING_OVER');
+		chests.mint(2, 6);
 	}
 
 	function testCanBuyAllChests() public {
@@ -271,92 +287,51 @@ contract ChestsTest is Test {
 		assertEq(chests.uri(2), 'http://example.com/chests/{id}.json');
 		assertEq(chests.uri(3), 'http://example.com/chests/{id}.json');
 	}
-}
 
-contract ChestsPreMintTest is Test {
-	ERC20Mock currency;
-	IOpenChests openChests;
-	Chests chests;
+	function testCanBatchMintForFree() public {
+		address to = address(465);
 
-	Authority authority = Authority(address(0));
-	address recipient = address(99);
-
-	function getChest(uint256 id) private view returns (Chest memory chest) {
-		(uint16 minted, uint16 max, uint224 price) = chests.chests(id);
-		chest = Chest(minted, max, price);
-	}
-
-	function setUp() public {
-		// Dependencies
-		currency = new ERC20Mock('USD', 'BUSD');
-		openChests = new OpenChestsMock();
-	}
-
-	function testCanPreMint() public {
-		address preMintTo = address(0x123);
-		chests = new Chests(
-			currency,
-			recipient,
-			openChests,
-			ChestsData.getChests(),
-			'',
-			preMintTo,
-			ToDynamicUtils.toDynamic([uint256(0)]),
-			ToDynamicUtils.toDynamic([uint256(150)])
+		// Mint
+		chests.batchMintFree(
+			to,
+			ToDynamicUtils.toDynamic([uint256(1)]),
+			ToDynamicUtils.toDynamic([uint256(10)])
 		);
 
-		// Make sure the recipient didn't get any currency
+		// Check state
+		assertEq(getChest(1).minted, 10);
+
+		// Check balances
 		assertEq(currency.balanceOf(recipient), 0);
-
-		// Check chest 0
-		assertEq(getChest(0).minted, 150);
-		assertEq(chests.balanceOf(preMintTo, 0), 150);
-
-		// Check chest 1
-		assertEq(getChest(1).minted, 0);
-		assertEq(chests.balanceOf(preMintTo, 1), 0);
-
-		// Check chest 2
-		assertEq(getChest(2).minted, 0);
-		assertEq(chests.balanceOf(preMintTo, 2), 0);
-
-		// Check chest 3
-		assertEq(getChest(3).minted, 0);
-		assertEq(chests.balanceOf(preMintTo, 3), 0);
+		assertEq(chests.balanceOf(to, 1), 10);
 	}
 
-	function testCanPreMintNoChest() public {
-		address zero = address(0);
-		uint256[] memory empty = new uint256[](0);
+	function testCannotBatchMintForFreeIfNotAuthorized() public {
+		address to = address(465);
+		vm.prank(to);
 
-		chests = new Chests(
-			currency,
-			recipient,
-			openChests,
-			ChestsData.getChests(),
-			'',
-			address(0),
-			empty,
-			empty
+		// Mint
+		vm.expectRevert('UNAUTHORIZED');
+		chests.batchMintFree(
+			to,
+			ToDynamicUtils.toDynamic([uint256(1)]),
+			ToDynamicUtils.toDynamic([uint256(10)])
 		);
+	}
 
-		// Make sure the recipient didn't get any currency
-		assertEq(currency.balanceOf(recipient), 0);
+	function testCanCreateNewChests() public {
+		Chest[] memory newChests = new Chest[](2);
+		newChests[0] = Chest(0, 123, 1234e18);
+		newChests[1] = Chest(0, 234, 2345e18);
 
-		// Check chest 0
-		assertEq(getChest(0).minted, 0);
-		assertEq(chests.balanceOf(zero, 0), 0);
+		chests.setChests(newChests);
 
-		// Check chest 1
-		assertEq(getChest(1).minted, 0);
-		assertEq(chests.balanceOf(zero, 1), 0);
+		assertEq(getChest(4).minted, 0);
+		assertEq(getChest(4).max, 123);
+		assertEq(getChest(4).price, 1234e18);
 
-		// Check chest 2
-		assertEq(getChest(2).minted, 0);
-		assertEq(chests.balanceOf(zero, 2), 0);
-
-		// Check chest 3
-		assertEq(getChest(3).minted, 0);
-		assertEq(chests.balanceOf(zero, 3), 0);
+		assertEq(getChest(5).minted, 0);
+		assertEq(getChest(5).max, 234);
+		assertEq(getChest(5).price, 2345e18);
 	}
 }
