@@ -18,13 +18,6 @@ enum Rarities {
 	Diamond
 }
 
-// IDS:
-// 0: Medusa
-// 1: Apollo
-// 2: Achilles
-// 3: Titan
-// 4: Chimera
-// 5: Zeus
 struct Character {
 	uint256 id;
 	string nickname;
@@ -68,8 +61,6 @@ contract Characters is ERC721, Auth {
 		uint256 id,
 		Rarities rarity
 	) public {
-		require(id < 6, 'UNKNOWN_CHARACTER');
-
 		_mint(to, characters.length);
 		emit Minted(to, id, characters.length, rarity);
 

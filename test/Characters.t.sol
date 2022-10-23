@@ -72,11 +72,6 @@ contract CharactersTest is Test {
 		characters.mint(address(1), 2, Rarities.Diamond);
 	}
 
-	function testCannotMintUnknownCharacter() public {
-		vm.expectRevert('UNKNOWN_CHARACTER');
-		characters.mint(address(1), 6, Rarities.Normal);
-	}
-
 	function testCanEvolve() public {
 		// Mint stones and approve
 		stones.mint(address(this), 100);
