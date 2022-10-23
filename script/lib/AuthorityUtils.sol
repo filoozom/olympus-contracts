@@ -6,6 +6,7 @@ import { RolesAuthority } from 'solmate/auth/authorities/RolesAuthority.sol';
 import { Authority } from 'solmate/auth/Auth.sol';
 
 // Custom
+import { BonusChests } from 'src/BonusChests.sol';
 import { Characters } from 'src/Characters.sol';
 import { Chests } from 'src/Chests.sol';
 import { Furnace } from 'src/Furnace.sol';
@@ -46,6 +47,14 @@ contract AuthorityUtils {
 		bytes4 functionSig
 	) private {
 		authority.setRoleCapability(role, target, functionSig, true);
+	}
+
+	function setupBonusChests(BonusChests bonusChests) internal {
+		authority.setUserRole(
+			address(bonusChests),
+			uint8(Roles.OpenChestsMinter),
+			true
+		);
 	}
 
 	function setupCharacters(Characters characters) internal {
