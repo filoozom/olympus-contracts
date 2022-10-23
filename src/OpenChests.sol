@@ -91,7 +91,7 @@ contract OpenChests is IOpenChests, ERC721, VRFConsumerBaseV2, Auth {
 		setConfigs(_configs);
 	}
 
-	function setConfigs(ChestConfigs[] memory _configs) private {
+	function setConfigs(ChestConfigs[] memory _configs) public requiresAuth {
 		uint256 length = _configs.length;
 		for (uint256 i = 0; i < length; ) {
 			ChestConfigs memory config = _configs[i];

@@ -29,7 +29,7 @@ import { ERC20Mock } from './mocks/ERC20Mock.sol';
 // Data
 import { CharactersData } from 'script/data/CharactersData.sol';
 import { ChestsData } from 'script/data/ChestsData.sol';
-import { OpenChestsData } from 'script/data/OpenChestsData.sol';
+import { OpenChestsData } from './data/OpenChestsData.sol';
 import { AuthorityData } from 'script/data/AuthorityData.sol';
 
 contract OpenChestsTest is Test {
@@ -237,5 +237,35 @@ contract OpenChestsTest is Test {
 		assertEq(chests.tokenURI(4), uri1);
 		assertEq(chests.tokenURI(5), uri2);
 		assertEq(chests.tokenURI(6), uri3);
+	}
+
+	function testCanCreateNewChests() public {
+		chests.setConfigs(OpenChestsData.getAdditionalConfigs());
+
+		uint256 requestId;
+		address user = address(42);
+
+		// Mint a new chest
+		vm.recordLogs();
+		chests.mint(user, 5);
+		Vm.Log[] memory logs = vm.getRecordedLogs();
+
+		// Fetch the requestId
+		for (uint256 i = 0; i < logs.length; i++) {
+			if (logs[i].topics[0] == RandomWordsRequested.selector) {
+				requestId = abi.decode(logs[i].data, (uint256));
+				break;
+			}
+		}
+
+		// Create a random word
+		uint256[] memory randomWords = new uint256[](1);
+		randomWords[0] = uint256(keccak256(abi.encode(requestId, 0)));
+
+		coordinator.fulfillRandomWordsWithOverride(
+			requestId,
+			address(chests),
+			randomWords
+		);
 	}
 }
