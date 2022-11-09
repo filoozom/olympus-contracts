@@ -61,12 +61,14 @@ contract DeployV2Script is Script, AuthorityUtils {
 	string charactersBaseUri = 'https://nftimages.olympus.game/characters/';
 
 	/* Production */
-	/*
 	// Deployed
-	RolesAuthority _authority = RolesAuthority(0x0);
-	Stones stones = Stones(0x0);
-	Powder powder = Powder(0x0);
-	Olymp olymp = Olymp(0x0);
+	Marketplace marketplace =
+		Marketplace(0x423417a73b684fE88D35858449840055B0FCEc12);
+	RolesAuthority _authority =
+		RolesAuthority(0x7b1fd50a4a046858575a0794a5d05Ae4170469a9);
+	Stones stones = Stones(0x20d9E48C39AeE6F21281827CFeE76eBa3366097d);
+	Powder powder = Powder(0x45B77Cc0a3a4C701E7C551641D6077a993d1e023);
+	Olymp olymp = Olymp(0xE963D09d7DdDdAFF718500E19aFC05d67a01658C);
 
 	// Currency
 	ERC20 currency = ERC20(address(0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56));
@@ -82,19 +84,20 @@ contract DeployV2Script is Script, AuthorityUtils {
 			keyHash: 0x114f3da0a805b6a67d6e9cd2ec746f7028f1b7376365af575cfea3550dd1aa04,
 			subscriptionId: 466
 		});
-	*/
 
 	/* Testnet */
-	// Currency
-	ERC20 currency = ERC20(0xa9BeF92eD63C997b418A86E0E14a4fE79e639f5A);
-
-	/* Goerli Testnet */
+	/*
 	// Deployed
+	Marketplace marketplace =
+		Marketplace(0xE6Ac23fb3A07ba45a44cC245F9F85Fb2bfec0dCb);
 	RolesAuthority _authority =
 		RolesAuthority(0x37D98eDb9C93c8E70ec737E9c51d16C908fBb33b);
 	Stones stones = Stones(0x802FAf1A3a7dE4d8BebB0433AE4009a501CDb531);
 	Powder powder = Powder(0xe5dbe4813C3F3F9702316FEB71479Bc6c83D99C0);
 	Olymp olymp = Olymp(0xc85d243e7FC0bf2d644D5FD92e78c66af853BbA5);
+
+	// Currency
+	ERC20 currency = ERC20(0xa9BeF92eD63C997b418A86E0E14a4fE79e639f5A);
 
 	// OpenChests
 	ChainlinkConfig chainlinkConfig =
@@ -107,6 +110,7 @@ contract DeployV2Script is Script, AuthorityUtils {
 			keyHash: 0x79d3d8832d904592c0bf9818b621522c988bb8b0c05cdc3b15aea1b6e8db0c15,
 			subscriptionId: 632
 		});
+	*/
 
 	function setUp() public {
 		authority = _authority;
@@ -147,6 +151,10 @@ contract DeployV2Script is Script, AuthorityUtils {
 		setupBonusChests(bonusChests);
 		setupOpenChests(openChests);
 		setupTraining(training);
+
+		// Marketplace
+		marketplace.allowToken(address(characters), Types.ERC721);
+		marketplace.allowToken(address(bonusChests), Types.ERC1155);
 
 		vm.stopBroadcast();
 	}
