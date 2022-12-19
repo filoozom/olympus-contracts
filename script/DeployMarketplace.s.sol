@@ -16,6 +16,10 @@ import { Marketplace, Types } from 'src/Marketplace.sol';
 import { Stones } from 'src/Stones.sol';
 
 contract DeployMarketplaceScript is Script, AuthorityUtils {
+	// Fees
+	address beneficiary = 0x11632134F596C26ee0775Df3c807c1cC33E22eF0;
+	uint256 fee = 500;
+
 	// Testnet
 	ERC20 currency = ERC20(0xa9BeF92eD63C997b418A86E0E14a4fE79e639f5A);
 
@@ -60,6 +64,6 @@ contract DeployMarketplaceScript is Script, AuthorityUtils {
 	}
 
 	function deployMarketplace() private returns (Marketplace) {
-		return new Marketplace(currency, owner, authority);
+		return new Marketplace(currency, owner, authority, beneficiary, fee);
 	}
 }

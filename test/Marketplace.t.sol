@@ -24,6 +24,9 @@ contract MarketplaceTest is Test {
 
 	address seller = address(1);
 	address buyer = address(2);
+	address beneficiary = address(3);
+
+	uint256 fee = 500;
 
 	event ItemListed(
 		address indexed token,
@@ -38,6 +41,7 @@ contract MarketplaceTest is Test {
 
 	event AllowToken(address indexed token, Types nftType);
 	event SetCurrency(ERC20 currency);
+	event SetFee(uint256 fee);
 
 	function setUp() public {
 		// Tokens
@@ -52,7 +56,9 @@ contract MarketplaceTest is Test {
 		marketplace = new Marketplace(
 			currency,
 			address(this),
-			Authority(address(0))
+			Authority(address(0)),
+			beneficiary,
+			fee
 		);
 
 		// Mint tokens
@@ -180,7 +186,7 @@ contract MarketplaceTest is Test {
 
 		// Buy the tokens
 		vm.startPrank(buyer);
-		currency.approve(address(marketplace), 75);
+		currency.approve(address(marketplace), 78);
 
 		vm.expectEmit(true, true, true, true);
 		emit ItemBought(0);
@@ -188,8 +194,9 @@ contract MarketplaceTest is Test {
 		vm.stopPrank();
 
 		// Check balances
-		assertEq(currency.balanceOf(buyer), 925);
+		assertEq(currency.balanceOf(buyer), 922);
 		assertEq(currency.balanceOf(seller), 75);
+		assertEq(currency.balanceOf(beneficiary), 3);
 		assertEq(erc20.balanceOf(seller), 495);
 		assertEq(erc20.balanceOf(buyer), 5);
 	}
@@ -278,7 +285,7 @@ contract MarketplaceTest is Test {
 
 		// Buy the tokens
 		vm.startPrank(buyer);
-		currency.approve(address(marketplace), 75);
+		currency.approve(address(marketplace), 78);
 
 		vm.expectEmit(true, true, true, true);
 		emit ItemBought(0);
@@ -286,8 +293,9 @@ contract MarketplaceTest is Test {
 		vm.stopPrank();
 
 		// Check balances
-		assertEq(currency.balanceOf(buyer), 925);
+		assertEq(currency.balanceOf(buyer), 922);
 		assertEq(currency.balanceOf(seller), 75);
+		assertEq(currency.balanceOf(beneficiary), 3);
 		assertEq(erc721.ownerOf(0), buyer);
 	}
 
@@ -375,7 +383,7 @@ contract MarketplaceTest is Test {
 
 		// Buy the tokens
 		vm.startPrank(buyer);
-		currency.approve(address(marketplace), 75);
+		currency.approve(address(marketplace), 78);
 
 		vm.expectEmit(true, true, true, true);
 		emit ItemBought(0);
@@ -383,10 +391,90 @@ contract MarketplaceTest is Test {
 		vm.stopPrank();
 
 		// Check balances
-		assertEq(currency.balanceOf(buyer), 925);
+		assertEq(currency.balanceOf(buyer), 922);
 		assertEq(currency.balanceOf(seller), 75);
+		assertEq(currency.balanceOf(beneficiary), 3);
 		assertEq(erc1155.balanceOf(buyer, 0), 6);
 		assertEq(erc1155.balanceOf(seller, 0), 4);
+	}
+
+	function testCanChangeFee() public {
+		assertEq(marketplace.fee(), 500);
+
+		vm.expectEmit(true, true, true, true);
+		emit SetFee(1000);
+		marketplace.setFee(1000);
+
+		assertEq(marketplace.fee(), 1000);
+	}
+
+	function testCannotSetFeeTooHigh() public {
+		vm.expectRevert('FEE_TOO_HIGH');
+		marketplace.setFee(1001);
+	}
+
+	function testCannotSetFeeAsUnprivileged() public {
+		vm.prank(buyer);
+		vm.expectRevert('UNAUTHORIZED');
+		marketplace.setFee(1001);
+	}
+
+	function testCanBuyWithUpdatedFee() public {
+		marketplace.allowToken(address(erc20), Types.ERC20);
+
+		// Update the fee
+		marketplace.setFee(1000);
+
+		// List the token
+		vm.startPrank(seller);
+		erc20.approve(address(marketplace), 5);
+		marketplace.listERC20(address(erc20), 5, 75);
+		vm.stopPrank();
+
+		// Buy the tokens
+		vm.startPrank(buyer);
+		currency.approve(address(marketplace), 82);
+
+		vm.expectEmit(true, true, true, true);
+		emit ItemBought(0);
+		marketplace.buyERC20(0);
+		vm.stopPrank();
+
+		// Check balances
+		assertEq(currency.balanceOf(buyer), 918);
+		assertEq(currency.balanceOf(seller), 75);
+		assertEq(currency.balanceOf(beneficiary), 7);
+		assertEq(erc20.balanceOf(seller), 495);
+		assertEq(erc20.balanceOf(buyer), 5);
+	}
+
+	function testCanBuyWithZeroFee() public {
+		marketplace.allowToken(address(erc20), Types.ERC20);
+
+		// Update the fee
+		marketplace.setFee(0);
+
+		// List the token
+		vm.startPrank(seller);
+		erc20.approve(address(marketplace), 5);
+		marketplace.listERC20(address(erc20), 5, 75);
+		vm.stopPrank();
+
+		// Buy the tokens
+		vm.startPrank(buyer);
+		currency.approve(address(marketplace), 75);
+
+		vm.expectEmit(true, true, true, true);
+		emit ItemBought(0);
+		marketplace.buyERC20(0);
+		vm.stopPrank();
+
+		// Check balances
+		assertEq(currency.balanceOf(buyer), 925);
+		assertEq(currency.balanceOf(seller), 75);
+		assertEq(currency.balanceOf(beneficiary), 0);
+		assertEq(erc20.balanceOf(seller), 495);
+		assertEq(erc20.balanceOf(buyer), 5);
 	}
 
 	// Utils

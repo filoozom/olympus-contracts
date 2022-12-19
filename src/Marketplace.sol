@@ -24,10 +24,16 @@ enum Types {
 }
 
 contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
+	uint32 public constant MAX_FEE = 1000;
+	uint32 public constant FEE_PRECISION = 1e4;
+
 	ERC20 public currency;
 	mapping(address => Types) public allowedTokens;
 	mapping(uint256 => Listing) public listings;
 	uint256 private listingCount = 0;
+
+	uint256 public fee;
+	address public beneficiary;
 
 	event ItemListed(
 		address indexed token,
@@ -42,13 +48,20 @@ contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
 
 	event AllowToken(address indexed token, Types nftType);
 	event SetCurrency(ERC20 currency);
+	event SetFee(uint256 fee);
 
 	constructor(
 		ERC20 _currency,
 		address _owner,
-		Authority _authority
+		Authority _authority,
+		address _beneficiary,
+		uint256 _fee
 	) Auth(_owner, _authority) {
 		currency = _currency;
+		beneficiary = _beneficiary;
+		fee = _fee;
+
+		emit SetFee(fee);
 	}
 
 	// Marketplace
@@ -142,6 +155,7 @@ contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
 		Listing storage listing = listings[id];
 		require(allowedTokens[listing.token] == Types.ERC20, 'WRONG_TOKEN');
 
+		transferFee(listing.price);
 		SafeTransferLib.safeTransferFrom(
 			currency,
 			msg.sender,
@@ -162,6 +176,7 @@ contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
 		Listing storage listing = listings[id];
 		require(allowedTokens[listing.token] == Types.ERC721, 'WRONG_TOKEN');
 
+		transferFee(listing.price);
 		SafeTransferLib.safeTransferFrom(
 			currency,
 			msg.sender,
@@ -182,6 +197,7 @@ contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
 		Listing storage listing = listings[id];
 		require(allowedTokens[listing.token] == Types.ERC1155, 'WRONG_TOKEN');
 
+		transferFee(listing.price);
 		SafeTransferLib.safeTransferFrom(
 			currency,
 			msg.sender,
@@ -211,6 +227,13 @@ contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
 		emit SetCurrency(currency);
 	}
 
+	function setFee(uint256 _fee) public requiresAuth {
+		require(_fee <= MAX_FEE, 'FEE_TOO_HIGH');
+
+		fee = _fee;
+		emit SetFee(fee);
+	}
+
 	// Private
 	function createListing(
 		address token,
@@ -230,5 +253,14 @@ contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
 		unchecked {
 			listingCount++;
 		}
+	}
+
+	function transferFee(uint256 price) private {
+		SafeTransferLib.safeTransferFrom(
+			currency,
+			msg.sender,
+			beneficiary,
+			(price * fee) / FEE_PRECISION
+		);
 	}
 }
