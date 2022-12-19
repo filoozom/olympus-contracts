@@ -156,12 +156,8 @@ contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
 		require(allowedTokens[listing.token] == Types.ERC20, 'WRONG_TOKEN');
 
 		transferFee(listing.price);
-		SafeTransferLib.safeTransferFrom(
-			currency,
-			msg.sender,
-			listing.owner,
-			listing.price
-		);
+		transferProfits(listing);
+
 		SafeTransferLib.safeTransfer(
 			ERC20(listing.token),
 			msg.sender,
@@ -177,12 +173,8 @@ contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
 		require(allowedTokens[listing.token] == Types.ERC721, 'WRONG_TOKEN');
 
 		transferFee(listing.price);
-		SafeTransferLib.safeTransferFrom(
-			currency,
-			msg.sender,
-			listing.owner,
-			listing.price
-		);
+		transferProfits(listing);
+
 		ERC721(listing.token).safeTransferFrom(
 			address(this),
 			msg.sender,
@@ -198,12 +190,8 @@ contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
 		require(allowedTokens[listing.token] == Types.ERC1155, 'WRONG_TOKEN');
 
 		transferFee(listing.price);
-		SafeTransferLib.safeTransferFrom(
-			currency,
-			msg.sender,
-			listing.owner,
-			listing.price
-		);
+		transferProfits(listing);
+
 		ERC1155(listing.token).safeTransferFrom(
 			address(this),
 			msg.sender,
@@ -261,6 +249,15 @@ contract Marketplace is Auth, ERC721TokenReceiver, ERC1155TokenReceiver {
 			msg.sender,
 			beneficiary,
 			(price * fee) / FEE_PRECISION
+		);
+	}
+
+	function transferProfits(Listing storage listing) private {
+		SafeTransferLib.safeTransferFrom(
+			currency,
+			msg.sender,
+			listing.owner,
+			listing.price
 		);
 	}
 }
